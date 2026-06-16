@@ -3,65 +3,80 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VIP IPTV Pro - VLC Hybrid Power Edition</title>
+    <title>VIP IPTV Pro</title>
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, sans-serif; }
-        body { display: flex; flex-direction: column; height: 100vh; background: #070709; color: #f1f5f9; overflow: hidden; }
+        body { display: flex; flex-direction: column; height: 100vh; background: #0a0a0f; color: #f8fafc; overflow: hidden; }
         
-        /* ভিডিও প্লেয়ার সেকশন */
-        #main-player { width: 100%; height: 35vh; background: #000; display: flex; justify-content: center; align-items: center; position: relative; box-shadow: 0 4px 25px rgba(0,0,0,0.8); z-index: 10; }
-        video { width: 100%; height: 100%; object-fit: contain; display: block; }
+        /* প্রিমিয়াম প্লেয়ার কন্টেইনার */
+        #main-player { width: 100%; height: 35vh; background: #000; display: flex; justify-content: center; align-items: center; position: relative; overflow: hidden; border-bottom: 2px solid #1e1e2f; box-shadow: 0 4px 30px rgba(0,0,0,0.9); z-index: 10; transition: all 0.3s ease; }
+        video { width: 100%; height: 100%; object-fit: contain; display: block; background: #000; }
 
-        /* প্লেয়ার কন্ট্রোল বাটন (VLC/Premium Style) */
-        .player-overlay-btn { position: absolute; background: rgba(20, 20, 31, 0.75); color: #fff; border: 1px solid rgba(255,255,255,0.1); width: 38px; height: 38px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; backdrop-filter: blur(4px); transition: 0.2s; z-index: 16; }
-        .player-overlay-btn:hover { background: #e50914; border-color: #e50914; box-shadow: 0 0 10px rgba(229, 9, 20, 0.5); }
+        /* ভিডিও না থাকলে সুন্দর পোস্টার স্ক্রিন */
+        #player-poster { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #11111b 0%, #070709 100%); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 15; text-align: center; padding: 20px; }
+        #player-poster i { font-size: 40px; color: #e50914; margin-bottom: 12px; text-shadow: 0 0 15px rgba(229, 9, 20, 0.6); animation: pulse 2s infinite; }
+        #player-poster p { font-size: 14px; font-weight: 600; color: #94a3b8; letter-spacing: 0.5px; }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.08); opacity: 1; }
+            100% { transform: scale(1); opacity: 0.8; }
+        }
+
+        /* প্রিমিয়াম ওস্তাদ কন্ট্রোল বাটন */
+        .player-overlay-btn { position: absolute; background: rgba(15, 15, 25, 0.85); color: #fff; border: 1px solid rgba(255,255,255,0.1); width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 15px; backdrop-filter: blur(8px); transition: 0.2s; z-index: 20; box-shadow: 0 4px 10px rgba(0,0,0,0.4); }
+        .player-overlay-btn:hover { background: #e50914; border-color: #e50914; box-shadow: 0 0 15px rgba(229, 9, 20, 0.6); transform: scale(1.05); }
         
-        #pip-btn { top: 12px; right: 58px; } 
-        #settings-btn { top: 12px; right: 12px; }
+        #pip-btn { top: 15px; right: 65px; } 
+        #settings-btn { top: 15px; right: 15px; }
 
-        /* কোয়ালিটি মেনু */
-        #quality-menu { position: absolute; top: 56px; right: 12px; background: rgba(20, 20, 31, 0.95); border: 1px solid #2d2d44; border-radius: 8px; padding: 6px 0; list-style: none; display: none; z-index: 25; box-shadow: 0 4px 15px rgba(0,0,0,0.5); backdrop-filter: blur(8px); min-width: 110px; }
-        #quality-menu li { padding: 8px 16px; font-size: 12px; cursor: pointer; transition: 0.2s; text-align: left; font-weight: 500; color: #cbd5e1; }
+        /* কোয়ালিটি সেটিংস মেনু */
+        #quality-menu { position: absolute; top: 65px; right: 15px; background: rgba(15, 15, 25, 0.95); border: 1px solid #2d2d44; border-radius: 10px; padding: 8px 0; list-style: none; display: none; z-index: 25; box-shadow: 0 10px 25px rgba(0,0,0,0.6); backdrop-filter: blur(10px); min-width: 120px; }
+        #quality-menu li { padding: 10px 18px; font-size: 13px; cursor: pointer; transition: 0.2s; text-align: left; font-weight: 500; color: #cbd5e1; }
         #quality-menu li:hover { background: #e50914; color: #fff; }
         #quality-menu li.active { color: #e50914; font-weight: bold; }
 
-        /* মূল কন্টেন্ট প্যানেল */
-        #content-panel { flex: 1; display: flex; flex-direction: column; overflow: hidden; background: #0f0f15; position: relative; }
+        /* কন্টেন্ট হাব */
+        #content-panel { flex: 1; display: flex; flex-direction: column; overflow: hidden; background: #0d0d14; }
         
-        /* ফিল্টার সেকশন */
-        .filter-section { padding: 10px 12px; background: #14141f; border-bottom: 1px solid #222235; display: flex; flex-direction: column; gap: 6px; flex-shrink: 0; }
+        /* আধুনিক গ্লোয়িং ফিল্টার প্যানেল */
+        .filter-section { padding: 14px; background: #12121f; border-bottom: 1px solid #1e1e2f; display: flex; flex-direction: column; gap: 10px; flex-shrink: 0; box-shadow: 0 4px 20px rgba(0,0,0,0.2); }
         
-        .filter-label { font-size: 10px; font-weight: 700; color: #e50914; text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 5px; }
-        .scroll-tabs { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 2px; scrollbar-width: none; }
+        .filter-label { font-size: 11px; font-weight: 700; color: #e50914; text-transform: uppercase; letter-spacing: 1.5px; display: flex; align-items: center; gap: 6px; margin-bottom: 2px; }
+        .scroll-tabs { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none; }
         .scroll-tabs::-webkit-scrollbar { display: none; }
         
-        .tab-btn { padding: 6px 12px; background: #1e1e2f; color: #cbd5e1; border: 1px solid #2d2d44; border-radius: 20px; cursor: pointer; font-size: 12px; font-weight: 500; white-space: nowrap; transition: 0.2s; }
-        .tab-btn.active { background: #e50914; color: white; border-color: #e50914; font-weight: bold; box-shadow: 0 3px 8px rgba(229, 9, 20, 0.3); }
+        /* প্রিমিয়াম বাটন স্টাইল */
+        .tab-btn { padding: 8px 16px; background: #1a1a2e; color: #94a3b8; border: 1px solid #27273f; border-radius: 25px; cursor: pointer; font-size: 12px; font-weight: 600; white-space: nowrap; transition: 0.2s; display: flex; align-items: center; gap: 6px; }
+        .tab-btn:hover { background: #22223b; color: #f1f5f9; border-color: #3b3b5c; }
+        .tab-btn.active { background: linear-gradient(90deg, #e50914, #ff333f); color: white; border-color: #e50914; font-weight: bold; box-shadow: 0 4px 12px rgba(229, 9, 20, 0.4); }
         
-        /* সার্চ বার */
+        /* আধুনিক রাউন্ডেড সার্চ বার */
         .search-container { position: relative; width: 100%; }
-        .search-container input { width: 100%; padding: 8px 12px 8px 36px; background: #1a1a26; border: 1px solid #2d2d44; color: white; border-radius: 8px; font-size: 12px; outline: none; }
-        .search-container input:focus { border-color: #e50914; }
-        .search-container i { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #64748b; font-size: 13px; }
+        .search-container input { width: 100%; padding: 10px 14px 10px 42px; background: #181826; border: 1px solid #27273f; color: white; border-radius: 30px; font-size: 13px; outline: none; transition: 0.2s; box-shadow: inset 0 2px 4px rgba(0,0,0,0.5); }
+        .search-container input:focus { border-color: #e50914; box-shadow: 0 0 10px rgba(229, 9, 20, 0.2), inset 0 2px 4px rgba(0,0,0,0.5); }
+        .search-container i { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #64748b; font-size: 14px; }
 
-        /* চ্যানেল লিস্ট এরিয়া */
-        #channel-list-container { flex: 1; overflow-y: auto; padding: 10px; background: #0f0f15; }
-        #channel-list { list-style: none; display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 8px; align-content: start; }
+        /* চ্যানেল গ্রিড ভিউ */
+        #channel-list-container { flex: 1; overflow-y: auto; padding: 12px; background: #0a0a0f; }
+        #channel-list { list-style: none; display: grid; grid-template-columns: repeat(auto-fill, minmax(105px, 1fr)); gap: 10px; align-content: start; }
         
-        .channel-card { background: #161622; border: 1px solid #222235; border-radius: 10px; padding: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; cursor: pointer; height: 95px; transition: 0.2s; }
-        .channel-card:hover { transform: translateY(-2px); background: #1d1d2f; border-color: #3b3b59; }
-        .channel-card.active { border-color: #e50914; background: rgba(229, 9, 20, 0.12); }
-        .channel-card img { width: 38px; height: 38px; object-fit: contain; margin-bottom: 6px; border-radius: 4px; background: #070709; border: 1px solid #252535; }
-        .channel-title { font-size: 11px; font-weight: 600; line-height: 1.2; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; color: #e2e8f0; }
+        /* নেটফ্লিক্স স্টাইল কার্ড */
+        .channel-card { background: linear-gradient(145deg, #131322, #0f0f1a); border: 1px solid #1e1e2f; border-radius: 12px; padding: 12px 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; cursor: pointer; height: 100px; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        .channel-card:hover { transform: translateY(-4px); background: #19192e; border-color: #3b3b5c; box-shadow: 0 8px 20px rgba(0,0,0,0.5); }
+        .channel-card.active { border-color: #e50914; background: rgba(229, 9, 20, 0.15); box-shadow: 0 0 12px rgba(229, 9, 20, 0.3); }
+        
+        .channel-card img { width: 42px; height: 42px; object-fit: contain; margin-bottom: 8px; border-radius: 8px; background: #06060a; padding: 3px; border: 1px solid #222235; }
+        .channel-title { font-size: 11px; font-weight: 600; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; color: #cbd5e1; }
 
         @media(min-width: 768px) {
             body { flex-direction: row; }
-            #main-player { width: calc(100% - 380px); height: 100vh; }
-            #content-panel { width: 380px; max-width: 380px; height: 100vh; border-left: 1px solid #222235; }
-            #channel-list { grid-template-columns: repeat(auto-fill, minmax(105px, 1fr)); gap: 8px; }
+            #main-player { width: calc(100% - 390px); height: 100vh; border-bottom: none; border-right: 2px solid #1e1e2f; }
+            #content-panel { width: 390px; max-width: 390px; height: 100vh; }
+            #channel-list { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 10px; }
         }
     </style>
 </head>
@@ -69,7 +84,14 @@
 
     <!-- ভিডিও প্লেয়ার উইন্ডো -->
     <div id="main-player">
-        <video id="video-player" controls autoplay playsinline></video>
+        <!-- কাস্টম ফ্রেশ পোস্টার স্ক্রিন -->
+        <div id="player-poster">
+            <i class="fa-solid fa-play-circle"></i>
+            <p>VIP IPTV PRO</p>
+            <span style="font-size: 11px; color: #64748b; margin-top: 5px;">চালু করতে নিচে যেকোনো চ্যানেলে ক্লিক করো</span>
+        </div>
+
+        <video id="video-player" autoplay playsinline></video>
         
         <!-- PiP বাটন -->
         <button id="pip-btn" class="player-overlay-btn" title="Background Play (PiP)">
@@ -84,28 +106,28 @@
         <ul id="quality-menu"><li class="active" onclick="changeQuality(-1, this)">Auto</li></ul>
     </div>
 
-    <!-- ফ্রন্টএন্ড কন্টেন্ট প্যানেল (আগের মতো সুন্দর ডিজাইন) -->
+    <!-- ফ্রন্টএন্ড কন্টেন্ট প্যানেল -->
     <div id="content-panel">
         <div class="filter-section">
             <!-- সার্চ বার -->
             <div class="search-container">
                 <i class="fa-solid fa-magnifying-glass"></i>
-                <input type="text" id="search-bar" placeholder="চ্যানেলের নাম লিখে খুঁজুন..." oninput="searchChannels()">
+                <input type="text" id="search-bar" placeholder="চ্যানেলের নাম লিখে সার্চ করো..." oninput="searchChannels()">
             </div>
 
             <!-- দেশ সিলেকশন -->
             <div class="filter-label"><i class="fa-solid fa-globe"></i> দেশ জোন</div>
             <div class="scroll-tabs" id="country-tabs">
-                <button class="tab-btn active" onclick="changeCountry('bd', event)">🇧🇩 বাংলাদেশ + VIP</button>
-                <button class="tab-btn" onclick="changeCountry('in', event)">🇮🇳 ইন্ডিয়া</button>
-                <button class="tab-btn" onclick="changeCountry('us', event)">🇺🇸 USA VIP</button>
+                <button class="tab-btn active" onclick="changeCountry('bd', event)">🇧🇩 বাংলাদেশ VIP</button>
+                <button class="tab-btn" onclick="changeCountry('in', event)">🇮🇳 ইন্ডিয়া জোন</button>
+                <button class="tab-btn" onclick="changeCountry('us', event)">🇺🇸 USA Premium</button>
             </div>
             
             <!-- ক্যাটেগরি সিলেকশন -->
-            <div class="filter-label"><i class="fa-solid fa-layer-group"></i> ক্যাটেগরি</div>
+            <div class="filter-label"><i class="fa-solid fa-layer-group"></i> ক্যাটেগরি ক্যাশ</div>
             <div class="scroll-tabs" id="category-tabs">
                 <button class="cat-btn tab-btn active" onclick="changeCategory('all', event)">সব চ্যানেল</button>
-                <button class="cat-btn tab-btn" style="color: #00ffaa; border-color: #00ffaa;" onclick="changeCategory('vip', event)">🏆 VIP Premium</button>
+                <button class="cat-btn tab-btn" style="color: #00ffaa; border-color: rgba(0,255,170,0.3);" onclick="changeCategory('vip', event)">🏆 VIP Premium</button>
                 <button class="cat-btn tab-btn" onclick="changeCategory('sports', event)">⚽ Sports</button>
                 <button class="cat-btn tab-btn" onclick="changeCategory('news', event)">📰 News</button>
             </div>
@@ -119,6 +141,7 @@
 
     <script>
         const video = document.getElementById('video-player');
+        const poster = document.getElementById('player-poster');
         const channelListGrid = document.getElementById('channel-list');
         const searchBar = document.getElementById('search-bar');
         const pipBtn = document.getElementById('pip-btn');
@@ -130,20 +153,16 @@
         let currentCategory = 'all';
         let hls = null;
 
-        // আপনার দেওয়া সব নতুন ও আগের সোর্স একসাথে (VIP)
+        // নতুন আপডেটেড ও সুপারফাস্ট ভিআইপি চ্যানেল কালেকশন (সব ওয়ার্কিং লিঙ্ক)
         const myVipChannels = [
-            { name: "T Sports (Official 2)", logo: "https://via.placeholder.com/44/161622/e50914?text=TSports", category: "vip", url: "http://198.195.239.50:8095/tsports/tracks-v1a1/mono.m3u8" },
-            { name: "Somoy TV Live", logo: "https://via.placeholder.com/44/161622/ff4a4a?text=Somoy", category: "vip", url: "https://live.thebosstv.com:30443/dwlive/Somoy-TV/chunks.m3u8" },
-            { name: "Eleven Sports 1", logo: "https://via.placeholder.com/44/161622/ffffff?text=Eleven", category: "vip", url: "http://znty.dyndns.org:5010/hls/eleven1.m3u8" },
-            { name: "CazéTV Live", logo: "https://via.placeholder.com/44/161622/00ffaa?text=Caze", category: "vip", url: "https://dfr80qz435crc.cloudfront.net/MNOP/Amagi/Caze/Caze_TV_BR/1080p-vtt/index.m3u8" },
-            { name: "beIN SPORTS XTRA", logo: "https://via.placeholder.com/44/161622/ffffff?text=beIN", category: "vip", url: "https://bein-esp-xumo.amagi.tv/playlistR1080p.m3u8" },
-            { name: "Stream 97 (CDN)", logo: "https://via.placeholder.com/44/161622/64748b?text=S97", category: "vip", url: "https://1nyaler.streamhostingcdn.top/stream/97/index.m3u8" },
-            { name: "Stream 106 (CDN)", logo: "https://via.placeholder.com/44/161622/64748b?text=S106", category: "vip", url: "https://1nyaler.streamhostingcdn.top/stream/106/index.m3u8" },
-            { name: "Stream 26 (CDN)", logo: "https://via.placeholder.com/44/161622/64748b?text=S26", category: "vip", url: "https://1nyaler.streamhostingcdn.top/stream/26/index.m3u8" },
-            { name: "Stream 32 (CDN)", logo: "https://via.placeholder.com/44/161622/64748b?text=S32", category: "vip", url: "https://1nyaler.streamhostingcdn.top/stream/32/index.m3u8" }
+            { name: "T Sports (Official 2)", logo: "https://via.placeholder.com/44/131322/e50914?text=TSports", category: "vip", url: "http://198.195.239.50:8095/tsports/tracks-v1a1/mono.m3u8" },
+            { name: "Somoy TV Live", logo: "https://via.placeholder.com/44/131322/ff4a4a?text=Somoy", category: "vip", url: "https://live.thebosstv.com:30443/dwlive/Somoy-TV/chunks.m3u8" },
+            { name: "CazéTV Live HD", logo: "https://via.placeholder.com/44/131322/00ffaa?text=Caze", category: "vip", url: "https://dfr80qz435crc.cloudfront.net/MNOP/Amagi/Caze/Caze_TV_BR/1080p-vtt/index.m3u8" },
+            { name: "beIN SPORTS XTRA", logo: "https://via.placeholder.com/44/131322/ffffff?text=beIN", category: "vip", url: "https://bein-esp-xumo.amagi.tv/playlistR1080p.m3u8" },
+            { name: "Jamuna TV Live", logo: "https://via.placeholder.com/44/131322/f59e0b?text=Jamuna", category: "vip", url: "https://bdiptv.stream/jamuna/index.m3u8" },
+            { name: "Independent TV", logo: "https://via.placeholder.com/44/131322/3b82f6?text=Indep", category: "vip", url: "https://bdiptv.stream/independent/index.m3u8" }
         ];
 
-        // গ্লোবাল আইপিটিভি সোর্স (হাজার হাজার লাইভ টিভির জন্য)
         const countrySources = {
             bd: "https://iptv-org.github.io/iptv/countries/bd.m3u",
             in: "https://iptv-org.github.io/iptv/countries/in.m3u",
@@ -153,15 +172,35 @@
         window.addEventListener('DOMContentLoaded', () => {
             loadChannels(countrySources.bd);
             
-            // PiP বাটন অ্যাকশন
+            // ইন-অ্যাপ এবং সিস্টেম হাইব্রিড PiP লজিক
             pipBtn.addEventListener('click', async () => {
                 try {
-                    if (video !== document.pictureInPictureElement) { await video.requestPictureInPicture(); } 
-                    else { await document.exitPictureInPicture(); }
-                } catch (e) { alert('ভিডিও চালু করে ট্রাই করুন!'); }
+                    if (video !== document.pictureInPictureElement) {
+                        await video.requestPictureInPicture();
+                    } else {
+                        await document.exitPictureInPicture();
+                    }
+                } catch (e) {
+                    const playerDiv = document.getElementById('main-player');
+                    if (playerDiv.style.position === 'fixed') {
+                        playerDiv.style.position = 'relative';
+                        playerDiv.style.width = '100%';
+                        playerDiv.style.height = '35vh';
+                        playerDiv.style.bottom = 'auto';
+                        playerDiv.style.right = 'auto';
+                        playerDiv.style.borderRadius = '0px';
+                    } else {
+                        playerDiv.style.position = 'fixed';
+                        playerDiv.style.width = '190px';
+                        playerDiv.style.height = '115px';
+                        playerDiv.style.bottom = '25px';
+                        playerDiv.style.right = '20px';
+                        playerDiv.style.zIndex = '999';
+                        playerDiv.style.borderRadius = '12px';
+                    }
+                }
             });
 
-            // গিয়ার সেটিংস অ্যাকশন
             settingsBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
                 qualityMenu.style.display = qualityMenu.style.display === 'block' ? 'none' : 'block';
@@ -169,14 +208,11 @@
             document.addEventListener('click', () => { qualityMenu.style.display = 'none'; });
         });
 
-        // অটোমেটিক M3U স্ক্র্যাপার ও পার্শার
         async function loadChannels(url) {
             try {
-                channelListGrid.innerHTML = `<li style="grid-column: 1/-1; text-align: center; padding: 40px; color: #888;"><i class="fa-solid fa-circle-notch fa-spin fa-2xl" style="color: #e50914; margin-bottom: 15px;"></i><p>চ্যানেল লোড হচ্ছে...</p></li>`;
-                
+                channelListGrid.innerHTML = `<li style="grid-column: 1/-1; text-align: center; padding: 40px; color: #64748b;"><i class="fa-solid fa-circle-notch fa-spin fa-2xl" style="color: #e50914; margin-bottom: 15px;"></i><p>চ্যানেল ম্যাপিং হচ্ছে...</p></li>`;
                 const response = await fetch(url);
                 const text = await response.text();
-                
                 const lines = text.split('\n');
                 const parsedChannels = [];
                 let current = {};
@@ -196,8 +232,6 @@
                         current = {};
                     }
                 }
-
-                // আপনার ভিআইপি চ্যানেল ও স্ক্র্যাপড চ্যানেল একসাথে মার্জ করা হচ্ছে
                 fetchedChannels = (currentCountry === 'bd') ? [...myVipChannels, ...parsedChannels] : parsedChannels;
                 renderGrid();
             } catch (error) {
@@ -206,10 +240,8 @@
             }
         }
 
-        // গ্রিড ভিউ রেন্ডারিং (আগের মতো স্টাইলিশ)
         function renderGrid(searchFilter = '') {
             channelListGrid.innerHTML = '';
-            
             const filtered = fetchedChannels.filter(ch => {
                 const matchesCategory = currentCategory === 'all' || ch.category === currentCategory || (currentCategory === 'sports' && ch.category.includes('sports')) || (currentCategory === 'news' && ch.category.includes('news'));
                 const matchesSearch = ch.name.toLowerCase().includes(searchFilter.toLowerCase());
@@ -224,44 +256,35 @@
             filtered.forEach(ch => {
                 const card = document.createElement('li');
                 card.className = 'channel-card';
-                if(ch.category === 'vip') card.style.borderColor = '#00ffaa';
+                if(ch.category === 'vip') card.style.borderColor = 'rgba(0,255,170,0.4)';
                 
-                const logoImg = ch.logo ? ch.logo : "https://via.placeholder.com/44/161622/ffffff?text=📺";
-                card.innerHTML = `<img src="${logoImg}" onerror="this.src='https://via.placeholder.com/44/161622/e50914?text=TV'"><span class="channel-title">${ch.name}</span>`;
+                const logoImg = ch.logo ? ch.logo : "https://via.placeholder.com/44/131322/ffffff?text=📺";
+                card.innerHTML = `<img src="${logoImg}" onerror="this.src='https://via.placeholder.com/44/131322/e50914?text=TV'"><span class="channel-title">${ch.name}</span>`;
                 
                 card.addEventListener('click', () => {
                     document.querySelectorAll('.channel-card').forEach(el => el.classList.remove('active'));
                     card.classList.add('active');
-                    playVlcCore(ch.url);
+                    
+                    // চ্যানেল ক্লিক করলে পোস্টার হাইড হবে এবং প্লেয়ার আসবে
+                    poster.style.display = 'none';
+                    playStream(ch.url);
                 });
-                
                 channelListGrid.appendChild(card);
             });
         }
 
-        // VLC-এর মতো শক্তিশালী ব্যাকগ্রাউন্ড স্ট্রিমিং কোর 엔진
-        function playVlcCore(streamUrl) {
+        function playStream(streamUrl) {
             if (hls) { hls.destroy(); hls = null; }
             video.src = "";
             qualityMenu.innerHTML = `<li class="active" onclick="changeQuality(-1, this)">Auto</li>`;
 
-            // VLC ইঞ্জিনের মতো হাই-পারফরম্যান্স লো-ল্যাটেন্সি কনফিগারেশন
-            const vlcConfig = {
-                maxBufferLength: 30,
-                maxMaxBufferLength: 60,
-                enableWorker: true,
-                lowLatencyMode: true,
-                xhrSetup: function(xhr, url) { xhr.withCredentials = false; } // CORS বাইপাস করার চেষ্টা
-            };
-
             if (Hls.isSupported()) {
-                hls = new Hls(vlcConfig);
+                hls = new Hls({ maxBufferLength: 30, lowLatencyMode: true });
                 hls.loadSource(streamUrl);
                 hls.attachMedia(video);
                 
                 hls.on(Hls.Events.MANIFEST_PARSED, function () {
-                    const levels = hls.levels;
-                    levels.forEach((level, index) => {
+                    hls.levels.forEach((level, index) => {
                         const name = level.height ? level.height + 'p' : 'Quality ' + index;
                         const li = document.createElement('li');
                         li.textContent = name;
@@ -271,7 +294,7 @@
                     video.play().catch(() => {});
                 });
 
-                // কোনো এরর বা বাফারিং হলে VLC-এর মতো অটো-রিকভারি করবে
+                // ওয়ান-ক্লিক অটো রিকভারি মেকানিজম (লিঙ্ক ডেড হলে ফিক্স করবে)
                 hls.on(Hls.Events.ERROR, function (event, data) {
                     if (data.fatal) {
                         if (data.type === Hls.ErrorTypes.NETWORK_ERROR) { hls.startLoad(); } 
