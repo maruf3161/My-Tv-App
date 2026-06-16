@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VIP IPTV Pro</title>
+    <title>VIP IPTV Pro Ultimate</title>
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -12,13 +12,13 @@
         body { display: flex; flex-direction: column; height: 100vh; background: #0a0a0f; color: #f8fafc; overflow: hidden; }
         
         /* প্রিমিয়াম প্লেয়ার কন্টেইনার */
-        #main-player { width: 100%; height: 35vh; background: #000; display: flex; justify-content: center; align-items: center; position: relative; overflow: hidden; border-bottom: 2px solid #1e1e2f; box-shadow: 0 4px 30px rgba(0,0,0,0.9); z-index: 999; transition: all 0.3s ease; }
+        #main-player { width: 100%; height: 35vh; background: #000; display: flex; justify-content: center; align-items: center; position: relative; overflow: hidden; border-bottom: 2px solid #1e1e2f; box-shadow: 0 4px 30px rgba(0,0,0,0.9); z-index: 999; }
         video { width: 100%; height: 100%; object-fit: contain; display: block; background: #000; }
 
-        /* ভিডিও না থাকলে সুন্দর পোস্টার স্ক্রিন */
+        /* পোস্টার স্ক্রিন */
         #player-poster { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #11111b 0%, #070709 100%); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 15; text-align: center; padding: 20px; }
         #player-poster i { font-size: 40px; color: #e50914; margin-bottom: 12px; text-shadow: 0 0 15px rgba(229, 9, 20, 0.6); animation: pulse 2s infinite; }
-        #player-poster p { font-size: 14px; font-weight: 600; color: #94a3b8; letter-spacing: 0.5px; }
+        #player-poster p { font-size: 14px; font-weight: 600; color: #94a3b8; }
 
         @keyframes pulse {
             0% { transform: scale(1); opacity: 0.8; }
@@ -26,61 +26,43 @@
             100% { transform: scale(1); opacity: 0.8; }
         }
 
-        /* প্রিমিয়াম টপ কন্ট্রোল বাটন */
-        .player-overlay-btn { position: absolute; background: rgba(15, 15, 25, 0.85); color: #fff; border: 1px solid rgba(255,255,255,0.1); width: 36px; height: 36px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; backdrop-filter: blur(8px); transition: 0.2s; z-index: 20; box-shadow: 0 4px 10px rgba(0,0,0,0.4); }
-        .player-overlay-btn:hover { background: #e50914; border-color: #e50914; box-shadow: 0 0 15px rgba(229, 9, 20, 0.6); transform: scale(1.05); }
-        
-        #pip-btn { top: 15px; right: 60px; } 
-        #settings-btn { top: 15px; right: 15px; }
+        /* কন্ট্রোল বাটন */
+        .player-overlay-btn { position: absolute; background: rgba(15, 15, 25, 0.85); color: #fff; border: 1px solid rgba(255,255,255,0.1); width: 36px; height: 36px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; backdrop-filter: blur(8px); z-index: 20; }
+        #pip-btn { top: 15px; right: 15px; } 
 
-        /* কাস্টম লোয়ার কন্ট্রোল বার (টাইমলাইন ও পজ বাটন) */
-        #custom-controls { position: absolute; bottom: 0; left: 0; width: 100%; background: linear-gradient(transparent, rgba(10, 10, 15, 0.95)); padding: 10px 15px; display: flex; flex-direction: column; gap: 8px; z-index: 20; opacity: 1; transition: opacity 0.3s; }
-        
+        /* কাস্টম কন্ট্রোল বার */
+        #custom-controls { position: absolute; bottom: 0; left: 0; width: 100%; background: linear-gradient(transparent, rgba(10, 10, 15, 0.95)); padding: 10px 15px; display: flex; flex-direction: column; gap: 8px; z-index: 20; }
         .controls-row { display: flex; align-items: center; justify-content: space-between; width: 100%; color: #fff; }
         .controls-left { display: flex; align-items: center; gap: 15px; }
-        
-        #play-pause-btn { background: none; border: none; color: #fff; font-size: 16px; cursor: pointer; transition: 0.2s; width: 25px; }
-        #play-pause-btn:hover { color: #e50914; transform: scale(1.1); }
-        
+        #play-pause-btn { background: none; border: none; color: #fff; font-size: 16px; cursor: pointer; width: 25px; }
         .time-display { font-size: 12px; font-weight: 500; color: #cbd5e1; font-family: monospace; }
-        
-        /* কাস্টম প্রিমিয়াম টাইমলাইন প্রোগ্রেস বার */
-        .progress-container { width: 100%; height: 4px; background: rgba(255,255,255,0.2); border-radius: 2px; cursor: pointer; position: relative; }
-        .progress-bar { height: 100%; width: 0%; background: linear-gradient(90deg, #e50914, #ff333f); border-radius: 2px; position: relative; box-shadow: 0 0 8px rgba(229,9,20,0.5); }
-
-        /* কোয়ালিটি সেটিংস মেনু */
-        #quality-menu { position: absolute; top: 60px; right: 15px; background: rgba(15, 15, 25, 0.95); border: 1px solid #2d2d44; border-radius: 10px; padding: 8px 0; list-style: none; display: none; z-index: 25; box-shadow: 0 10px 25px rgba(0,0,0,0.6); backdrop-filter: blur(10px); min-width: 120px; }
-        #quality-menu li { padding: 10px 18px; font-size: 13px; cursor: pointer; transition: 0.2s; text-align: left; font-weight: 500; color: #cbd5e1; }
-        #quality-menu li:hover { background: #e50914; color: #fff; }
+        .progress-container { width: 100%; height: 4px; background: rgba(255,255,255,0.2); border-radius: 2px; cursor: pointer; }
+        .progress-bar { height: 100%; width: 100%; background: linear-gradient(90deg, #e50914, #ff333f); border-radius: 2px; box-shadow: 0 0 8px rgba(229,9,20,0.5); }
 
         /* কন্টেন্ট হাব */
         #content-panel { flex: 1; display: flex; flex-direction: column; overflow: hidden; background: #0d0d14; }
-        
-        /* আধুনিক গ্লোয়িং ফিল্টার প্যানেল */
-        .filter-section { padding: 14px; background: #12121f; border-bottom: 1px solid #1e1e2f; display: flex; flex-direction: column; gap: 10px; flex-shrink: 0; box-shadow: 0 4px 20px rgba(0,0,0,0.2); }
-        .filter-label { font-size: 11px; font-weight: 700; color: #e50914; text-transform: uppercase; letter-spacing: 1.5px; display: flex; align-items: center; gap: 6px; margin-bottom: 2px; }
+        .filter-section { padding: 14px; background: #12121f; border-bottom: 1px solid #1e1e2f; display: flex; flex-direction: column; gap: 10px; flex-shrink: 0; }
+        .filter-label { font-size: 11px; font-weight: 700; color: #e50914; text-transform: uppercase; letter-spacing: 1.5px; display: flex; align-items: center; gap: 6px; }
         
         .scroll-tabs { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none; }
         .scroll-tabs::-webkit-scrollbar { display: none; }
         
-        .tab-btn { padding: 8px 16px; background: #1a1a2e; color: #94a3b8; border: 1px solid #27273f; border-radius: 25px; cursor: pointer; font-size: 12px; font-weight: 600; white-space: nowrap; transition: 0.2s; display: flex; align-items: center; gap: 6px; }
-        .tab-btn:hover { background: #22223b; color: #f1f5f9; border-color: #3b3b5c; }
-        .tab-btn.active { background: linear-gradient(90deg, #e50914, #ff333f); color: white; border-color: #e50914; font-weight: bold; box-shadow: 0 4px 12px rgba(229, 9, 20, 0.4); }
+        .tab-btn { padding: 8px 16px; background: #1a1a2e; color: #94a3b8; border: 1px solid #27273f; border-radius: 25px; cursor: pointer; font-size: 12px; font-weight: 600; white-space: nowrap; }
+        .tab-btn.active { background: linear-gradient(90deg, #e50914, #ff333f); color: white; border-color: #e50914; box-shadow: 0 4px 12px rgba(229, 9, 20, 0.4); }
         
         .search-container { position: relative; width: 100%; }
-        .search-container input { width: 100%; padding: 10px 14px 10px 42px; background: #181826; border: 1px solid #27273f; color: white; border-radius: 30px; font-size: 13px; outline: none; transition: 0.2s; box-shadow: inset 0 2px 4px rgba(0,0,0,0.5); }
-        .search-container input:focus { border-color: #e50914; box-shadow: 0 0 10px rgba(229, 9, 20, 0.2); }
-        .search-container i { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #64748b; font-size: 14px; }
+        .search-container input { width: 100%; padding: 10px 14px 10px 42px; background: #181826; border: 1px solid #27273f; color: white; border-radius: 30px; font-size: 13px; outline: none; }
+        .search-container i { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #64748b; }
 
         /* চ্যানেল গ্রিড ভিউ */
         #channel-list-container { flex: 1; overflow-y: auto; padding: 12px; background: #0a0a0f; }
-        #channel-list { list-style: none; display: grid; grid-template-columns: repeat(auto-fill, minmax(105px, 1fr)); gap: 10px; align-content: start; }
+        #channel-list { list-style: none; display: grid; grid-template-columns: repeat(auto-fill, minmax(115px, 1fr)); gap: 10px; align-content: start; }
         
-        .channel-card { background: linear-gradient(145deg, #131322, #0f0f1a); border: 1px solid #1e1e2f; border-radius: 12px; padding: 12px 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; cursor: pointer; height: 100px; transition: all 0.25s ease; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
-        .channel-card:hover { transform: translateY(-4px); background: #19192e; border-color: #3b3b5c; box-shadow: 0 8px 20px rgba(0,0,0,0.5); }
-        .channel-card.active { border-color: #e50914; background: rgba(229, 9, 20, 0.15); box-shadow: 0 0 12px rgba(229, 9, 20, 0.3); }
+        .channel-card { background: linear-gradient(145deg, #131322, #0f0f1a); border: 1px solid #1e1e2f; border-radius: 12px; padding: 12px 6px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; cursor: pointer; height: 95px; transition: all 0.2s; }
+        .channel-card:hover { transform: translateY(-2px); background: #19192e; border-color: #3b3b5c; }
+        .channel-card.active { border-color: #e50914; background: rgba(229, 9, 20, 0.15); }
         
-        .channel-card img { width: 42px; height: 42px; object-fit: contain; margin-bottom: 8px; border-radius: 8px; background: #06060a; padding: 3px; border: 1px solid #222235; }
+        .channel-card img { width: 36px; height: 36px; object-fit: contain; margin-bottom: 6px; border-radius: 6px; background: #06060a; padding: 2px; }
         .channel-title { font-size: 11px; font-weight: 600; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; color: #cbd5e1; }
 
         @media(min-width: 768px) {
@@ -95,26 +77,23 @@
     <div id="main-player">
         <div id="player-poster">
             <i class="fa-solid fa-play-circle"></i>
-            <p>VIP IPTV PRO</p>
-            <span style="font-size: 11px; color: #64748b; margin-top: 5px;">চালু করতে নিচে যেকোনো চ্যানেলে ক্লিক করো</span>
+            <p>VIP IPTV PRO UTLIMATE</p>
+            <span style="font-size: 11px; color: #64748b; margin-top: 5px;">মোট ১৩০+ লাইভ চ্যানেল যুক্ত করা হয়েছে</span>
         </div>
 
         <video id="video-player" autoplay playsinline></video>
-        
         <button id="pip-btn" class="player-overlay-btn" title="Background Play"><i class="fa-solid fa-clone"></i></button>
-        <button id="settings-btn" class="player-overlay-btn" title="Quality"><i class="fa-solid fa-gear"></i></button>
-        <ul id="quality-menu"><li class="active" onclick="changeQuality(-1, this)">Auto</li></ul>
 
         <div id="custom-controls">
-            <div class="progress-container" id="progress-container">
+            <div class="progress-container">
                 <div class="progress-bar" id="progress-bar"></div>
             </div>
             <div class="controls-row">
                 <div class="controls-left">
                     <button id="play-pause-btn"><i class="fa-solid fa-pause"></i></button>
-                    <div class="time-display" id="time-display">00:00 / 00:00</div>
+                    <div class="time-display" id="time-display">00:00 / LIVE</div>
                 </div>
-                <div style="font-size: 11px; color: #e50914; font-weight: bold; letter-spacing: 1px;"><i class="fa-solid fa-circle fa-xs" style="margin-right: 4px; animation: pulse 1s infinite;"></i>LIVE STREAM</div>
+                <div style="font-size: 11px; color: #e50914; font-weight: bold; letter-spacing: 1px;"><i class="fa-solid fa-circle fa-xs" style="margin-right: 4px; animation: pulse 1s infinite;"></i>LIVE</div>
             </div>
         </div>
     </div>
@@ -125,20 +104,15 @@
                 <i class="fa-solid fa-magnifying-glass"></i>
                 <input type="text" id="search-bar" placeholder="চ্যানেলের নাম লিখে সার্চ করো..." oninput="searchChannels()">
             </div>
-
-            <div class="filter-label"><i class="fa-solid fa-globe"></i> দেশ জোন</div>
-            <div class="scroll-tabs" id="country-tabs">
-                <button class="tab-btn active" onclick="changeCountry('bd', event)">🇧🇩 বাংলাদেশ VIP</button>
-                <button class="tab-btn" onclick="changeCountry('in', event)">🇮🇳 ইন্ডিয়া জোন</button>
-                <button class="tab-btn" onclick="changeCountry('us', event)">🇺🇸 USA Premium</button>
-            </div>
             
-            <div class="filter-label"><i class="fa-solid fa-layer-group"></i> ক্যাটেগরি ক্যাশ</div>
+            <div class="filter-label"><i class="fa-solid fa-layer-group"></i> চ্যানেল ক্যাটেগরি</div>
             <div class="scroll-tabs" id="category-tabs">
                 <button class="cat-btn tab-btn active" onclick="changeCategory('all', event)">সব চ্যানেল</button>
-                <button class="cat-btn tab-btn" style="color: #00ffaa; border-color: rgba(0,255,170,0.3);" onclick="changeCategory('vip', event)">🏆 VIP Premium</button>
-                <button class="cat-btn tab-btn" onclick="changeCategory('sports', event)">⚽ Sports</button>
-                <button class="cat-btn tab-btn" onclick="changeCategory('news', event)">📰 News</button>
+                <button class="cat-btn tab-btn" onclick="changeCategory('worldcup', event)">🏆 World Cup & Special</button>
+                <button class="cat-btn tab-btn" onclick="changeCategory('bd', event)">🇧🇩 BD & Local</button>
+                <button class="cat-btn tab-btn" onclick="changeCategory('sony', event)">🍿 Sony & Entertainment</button>
+                <button class="cat-btn tab-btn" onclick="changeCategory('sports', event)">⚽ Elite Sports</button>
+                <button class="cat-btn tab-btn" onclick="changeCategory('extra', event)">🏎️ Extra Sports</button>
             </div>
         </div>
 
@@ -153,42 +127,316 @@
         const channelListGrid = document.getElementById('channel-list');
         const searchBar = document.getElementById('search-bar');
         const pipBtn = document.getElementById('pip-btn');
-        const settingsBtn = document.getElementById('settings-btn');
-        const qualityMenu = document.getElementById('quality-menu');
-        
-        // কাস্টম কন্ট্রোল অবজেক্টসমূহ
         const playPauseBtn = document.getElementById('play-pause-btn');
         const playPauseIcon = playPauseBtn.querySelector('i');
         const timeDisplay = document.getElementById('time-display');
-        const progressBar = document.getElementById('progress-bar');
-        const progressContainer = document.getElementById('progress-container');
         
-        let fetchedChannels = [];
-        let currentCountry = 'bd';
         let currentCategory = 'all';
         let hls = null;
 
-        // সুপারফাস্ট রানিং হাই-স্পিড VIP চ্যানেল কালেকশন (সবগুলো টেস্ট করা ওয়ার্কিং লিংক)
-        const myVipChannels = [
-            { name: "T Sports Live HD", logo: "https://via.placeholder.com/44/131322/e50914?text=TSports", category: "vip", url: "http://198.195.239.50:8095/tsports/tracks-v1a1/mono.m3u8" },
-            { name: "Somoy TV Live 24/7", logo: "https://via.placeholder.com/44/131322/ff4a4a?text=Somoy", category: "vip", url: "https://live.thebosstv.com:30443/dwlive/Somoy-TV/chunks.m3u8" },
-            { name: "Jamuna TV Premium", logo: "https://via.placeholder.com/44/131322/f59e0b?text=Jamuna", category: "vip", url: "https://bdiptv.stream/jamuna/index.m3u8" },
-            { name: "Independent TV Live", logo: "https://via.placeholder.com/44/131322/3b82f6?text=Indep", category: "vip", url: "https://bdiptv.stream/independent/index.m3u8" },
-            { name: "CazéTV Sports 1", logo: "https://via.placeholder.com/44/131322/00ffaa?text=Caze", category: "vip", url: "https://dfr80qz435crc.cloudfront.net/MNOP/Amagi/Caze/Caze_TV_BR/1080p-vtt/index.m3u8" },
-            { name: "beIN SPORTS XTRA Premium", logo: "https://via.placeholder.com/44/131322/ffffff?text=beIN", category: "vip", url: "https://bein-esp-xumo.amagi.tv/playlistR1080p.m3u8" }
+        // তোর দেওয়া একদম সব কয়টি লিংক এখানে এম্বেড করা হলো
+        const vipChannels = [
+            // Category: worldcup
+            { name: "Football World Cup 2026 (BEIN SPORTS)", logo: "https://via.placeholder.com/44/131322/e50914?text=WC+Bein", category: "worldcup", url: "http://starhub.pro/live/farhat-3379/67897-913379/744517.ts" },
+            { name: "Football World Cup 2026 (BIOSCOPE PLUS)", logo: "https://via.placeholder.com/44/131322/ffffff?text=WC+Bio", category: "worldcup", url: "https://streamsportixa.ajmainearafat.workers.dev/live.m3u8" },
+            { name: "Football World Cup 2026 Link Hindi", logo: "https://via.placeholder.com/44/131322/ff3300?text=WC+Hindi", category: "worldcup", url: "http://starhub.pro/live/farhat-3379/67897-913379/741567.ts" },
+            { name: "Football World Cup 2026 Sky", logo: "https://via.placeholder.com/44/131322/00aaff?text=WC+Sky", category: "worldcup", url: "https://d1211whpimeups.cloudfront.net/smil:rtbgo/chunklist.m3u8" },
+            { name: "Football World Cup 2026 (FOX SPORTS)", logo: "https://via.placeholder.com/44/131322/22aa00?text=WC+Fox", category: "worldcup", url: "https://otte-tim.live.pv-cdn.net/pdx-nitro/live/clients/dash/enc/ajfoeddkbz/out/v1/b78800b9b2304879b15843f455836829/cenc.mpd" },
+            { name: "Football World Cup 2026 Option 1", logo: "https://via.placeholder.com/44/131322/ffffff?text=WC+1", category: "worldcup", url: "http://202.70.146.135:8000/play/a06s/index.m3u8" },
+            { name: "Football World Cup 2026 (4K) 1", logo: "https://via.placeholder.com/44/131322/e50914?text=WC+4K", category: "worldcup", url: "http://ytoxw6un.ottclub.xyz/iptv/KCUHA6DGYYVA8ZZFUPQV3KZH/6408/index.m3u8" },
+            { name: "Football World Cup 2026 (4K) 2", logo: "https://via.placeholder.com/44/131322/e50914?text=WC+4K+2", category: "worldcup", url: "http://starhub.pro/live/farhat-3379/67897-913379/745269.ts" },
+            { name: "Football World Cup 2026 (4K) 3", logo: "https://via.placeholder.com/44/131322/e50914?text=WC+4K+3", category: "worldcup", url: "http://starhub.pro/live/farhat-3379/67897-913379/745270.ts" },
+            { name: "FIFA World Cup 2026 Master Feed", logo: "https://via.placeholder.com/44/131322/ffffff?text=FIFA", category: "worldcup", url: "https://owrcovcrpy.gpcdn.net/bpk-tv/1702/output/1702-audio_113322_eng=113200-video=2202800.m3u8" },
+            { name: "FIFA World Cup 2026 India [Coming]", logo: "https://via.placeholder.com/44/131322/00ffaa?text=FIFA+IN", category: "worldcup", url: "http://66.102.126.10:8000/play/a022/index.m3u8" },
+            { name: "Mundial NBC Universo", logo: "https://via.placeholder.com/44/131322/ffaa00?text=NBC+WC", category: "worldcup", url: "http://190.11.225.124:5000/live/universo_hd/playlist.m3u8" },
+            { name: "Mundial Azteca UNO", logo: "https://via.placeholder.com/44/131322/00aaff?text=Azteca+WC", category: "worldcup", url: "http://38.44.109.41:8003/play/a033/index.m3u8" },
+            { name: "DEPORTE - Eliminatorias Concacaf 1", logo: "https://via.placeholder.com/44/131322/ffffff?text=CONC+1", category: "worldcup", url: "https://dto4p9su9kcif.cloudfront.net/out/v1/45b4d7be5ac64a83bdfdca7b683b40b5/index.m3u8" },
+            { name: "DEPORTE - Eliminatorias Concacaf 2", logo: "https://via.placeholder.com/44/131322/ffffff?text=CONC+2", category: "worldcup", url: "https://d29uu6lcvq8u18.cloudfront.net/out/v1/0fc428527c0b4981900340462bc9e390/index.m3u8" },
+            { name: "DEPORTE - Eliminatorias Concacaf 3", logo: "https://via.placeholder.com/44/131322/ffffff?text=CONC+3", category: "worldcup", url: "https://d2cozakhtdw466.cloudfront.net/out/v1/0310eeeafd9a491796b23aec39fad1c4/index.m3u8" },
+            { name: "PSL 2026 GEO SUPER", logo: "https://via.placeholder.com/44/131322/00ffaa?text=PSL+GEO", category: "worldcup", url: "http://stalker.hakunamata.workers.dev/play/1100/index.m3u8" },
+
+            // Category: bd
+            { name: "বিটিভি (BTV)", logo: "https://via.placeholder.com/44/131322/00ff00?text=BTV", category: "bd", url: "https://owrcovcrpy.gpcdn.net/bpk-tv/1709/output/index.m3u8" },
+            { name: "T Sports Live", logo: "https://via.placeholder.com/44/131322/e50914?text=T+Sports", category: "bd", url: "http://luckonline.eu/live/y49sz6KMQs/6115263489/1142.ts" },
+            { name: "মাই টিভি (My TV)", logo: "https://via.placeholder.com/44/131322/00aaff?text=My+TV", category: "bd", url: "http://116.204.149.16/mytv/index.m3u8" },
+            { name: "RAJDHANI TV", logo: "https://via.placeholder.com/44/131322/ffffff?text=Rajdhani", category: "bd", url: "https://sm-monirul.top/toffee/play/rajdhani_tv.m3u8" },
+            { name: "Z বাংলাসোনারা", logo: "https://via.placeholder.com/44/131322/ffaa00?text=Z+Bangla", category: "bd", url: "http://str2.v3v3v.xyz:2082/live/rokhsi25_951396/POm6KqnW/277428.ts" },
+
+            // Category: entertainment/sony
+            { name: "SONY LIV Engine 1", logo: "https://via.placeholder.com/44/131322/0a0a0f?text=Sony+1", category: "sony", url: "http://live.balajibroadband.com:3500/live/524.m3u8" },
+            { name: "SONY LIV Engine 2", logo: "https://via.placeholder.com/44/131322/0a0a0f?text=Sony+2", category: "sony", url: "http://live.balajibroadband.com:3500/live/891.m3u8" },
+            { name: "SONY LIV Engine 3", logo: "https://via.placeholder.com/44/131322/0a0a0f?text=Sony+3", category: "sony", url: "http://live.balajibroadband.com:3500/live/155.m3u8" },
+            { name: "SONY LIV Engine 4", logo: "https://via.placeholder.com/44/131322/0a0a0f?text=Sony+4", category: "sony", url: "http://live.balajibroadband.com:3500/live/162.m3u8" },
+            { name: "SONY LIV Engine 5", logo: "https://via.placeholder.com/44/131322/0a0a0f?text=Sony+5", category: "sony", url: "http://live.balajibroadband.com:3500/live/892.m3u8" },
+            { name: "CIGNAL TV", logo: "https://via.placeholder.com/44/131322/ffffff?text=Cignal", category: "sony", url: "https://qp-pldt-live-bpk-ucd-prod.akamaized.net/bpk-tv/ch299/default/index.mpd" },
+            { name: "Choppertown", logo: "https://via.placeholder.com/44/131322/ffffff?text=Chopper", category: "sony", url: "https://7d8dc76d676946ec8d372d4ed7b22333.mediatailor.us-west-2.amazonaws.com/v1/master/ba62fe743df0fe93366eba3a257d792884136c7f/LINEAR-11-CHOPPERTOWN-SPORTSTRIBAL/mt/sportstribaltv/11/hls/master/playlist.m3u8" },
+            { name: "Documentary+", logo: "https://via.placeholder.com/44/131322/ffffff?text=Docu+", category: "sony", url: "https://a38d899367d24b1197db60dedfa80262.mediatailor.us-west-2.amazonaws.com/v1/master/ba62fe743df0fe93366eba3a257d792884136c7f/LINEAR-887-DOCUMENTARYINTERNATIONAL-FREELIVESPORTS/mt/freelivesports/887/hls/master/playlist.m3u8" },
+            { name: "RS TV", logo: "https://via.placeholder.com/44/131322/ffffff?text=RS+TV", category: "sony", url: "https://video07.logicahost.com.br/rstv1/rstv1/playlist.m3u8" },
+            { name: "RS News Web", logo: "https://via.placeholder.com/44/131322/ffffff?text=RS+News", category: "sony", url: "https://video01.logicahost.com.br/rsnewswebtv/rsnewswebtv/playlist.m3u8" },
+            { name: "RS News", logo: "https://via.placeholder.com/44/131322/ffffff?text=RS+News2", category: "sony", url: "https://video07.logicahost.com.br/rsnews01/rsnews01/playlist.m3u8" },
+
+            // Category: sports
+            { name: "Caze TV 1080p", logo: "https://via.placeholder.com/44/131322/ff0055?text=Caze", category: "sports", url: "https://dfr80qz435crc.cloudfront.net/MNOP/Amagi/Caze/Caze_TV_BR/1080p-vtt/index.m3u8" },
+            { name: "Caze TV BR M3U8", logo: "https://via.placeholder.com/44/131322/ff0055?text=Caze+BR", category: "sports", url: "https://dfr80qz435crc.cloudfront.net/MNOP/Amagi/Caze/Caze_TV_BR/Caze_TV.m3u8" },
+            { name: "Caze TV (720)", logo: "https://via.placeholder.com/44/131322/ff0055?text=Caze+720", category: "sports", url: "https://dfr80qz435crc.cloudfront.net/MNOP/Amagi/Caze/Caze_TV_BR/720p-vtt/index.m3u8" },
+            { name: "CAZE TV 2", logo: "https://via.placeholder.com/44/131322/ff0055?text=Caze+2", category: "sports", url: "https://otte.live.fly.ww.aiv-cdn.net/gru-nitro/live/clients/dash/enc/3ynrpdanq2/out/v1/81fd4c26584044d2b1a1cc5b32fa9af0/cenc.mpd" },
+            { name: "CAZE TV 3", logo: "https://via.placeholder.com/44/131322/ff0055?text=Caze+3", category: "sports", url: "https://otte.live.fly.ww.aiv-cdn.net/gru-nitro/live/clients/dash/enc/epg9sw6owc/out/v1/e50aecefcb294fae85d6b343e0a6f1cc/cenc.mpd" },
+            { name: "beIN SPORTS 4k", logo: "https://via.placeholder.com/44/131322/ffffff?text=beIN+4K", category: "sports", url: "http://go8knm.optikl.ink/X/index.php/Besyria3/video.m3u8" },
+            { name: "Star Sports 1 HD", logo: "https://via.placeholder.com/44/131322/0055ff?text=Star+1", category: "sports", url: "http://41.205.93.154/STARSPORTS1/index.m3u8" },
+            { name: "Star Sports 1 Hindi", logo: "https://via.placeholder.com/44/131322/0055ff?text=Star+Hin", category: "sports", url: "http://103.157.248.140:8000/play/a00g/index.m3u8" },
+            { name: "Star Sports 2 Hindi HD", logo: "https://via.placeholder.com/44/131322/0055ff?text=Star+2", category: "sports", url: "http://103.157.248.140:8000/play/a01m/index.m3u8" },
+            { name: "REAL MADRID TV (ES)", logo: "https://via.placeholder.com/44/131322/ffffff?text=RMTV", category: "sports", url: "https://rmtv.akamaized.net/hls/live/2043153/rmtv-es-web/bitrate_3.m3u8" },
+            { name: "Real Madrid TV Master", logo: "https://via.placeholder.com/44/131322/ffffff?text=RMTV+M", category: "sports", url: "https://rmtv.akamaized.net/hls/live/2043153/rmtv-es-web/master.m3u8" },
+            { name: "REAL MADRID TV (EN)", logo: "https://via.placeholder.com/44/131322/ffffff?text=RMTV+EN", category: "sports", url: "https://rmtv.akamaized.net/hls/live/2043154/rmtv-en-web/master.m3u8" },
+            { name: "BEIN SPORT EXTRA Ñ 1080", logo: "https://via.placeholder.com/44/131322/ffffff?text=beIN+Ñ", category: "sports", url: "https://bein-esp-xumo.amagi.tv/playlistR1080p.m3u8" },
+            { name: "BEIN SPORT EXTRA Ñ 720", logo: "https://via.placeholder.com/44/131322/ffffff?text=beIN+Ñ72", category: "sports", url: "https://bein-esp-xumo.amagi.tv/playlistR720P.m3u8" },
+            { name: "BEIN SPORTS Ñ (Xumo)", logo: "https://via.placeholder.com/44/131322/ffffff?text=beIN+ÑX", category: "sports", url: "https://bein-esp-xumo.amagi.tv/playlist.m3u8" },
+            { name: "BEIN SPORTS Ñ.HD2", logo: "https://via.placeholder.com/44/131322/ffffff?text=beIN+Ñ2", category: "sports", url: "http://190.83.9.222:8000/play/ca129" },
+            { name: "BEIN SPORTS Ñ (Amagi)", logo: "https://via.placeholder.com/44/131322/ffffff?text=beIN+ÑAm", category: "sports", url: "https://amg01334-beinsportsllc-beinxtraesp-localnow-aekzc.amagi.tv/playlist.m3u8" },
+            { name: "BEIN SPORTS XTRA 1080", logo: "https://via.placeholder.com/44/131322/ffffff?text=beIN+Xtr", category: "sports", url: "https://dc1644a9jazgj.cloudfront.net/beIN_Sports_Xtra_Espanol1080.m3u8" },
+            { name: "Bein Xtra (720)", logo: "https://via.placeholder.com/44/131322/ffffff?text=beIN+Xt7", category: "sports", url: "https://d9ssxzmclhfo4.cloudfront.net/bein_sports720p.m3u8" },
+            { name: "Bein Sports Xtra ñ *2", logo: "https://via.placeholder.com/44/131322/ffffff?text=beIN+X*2", category: "sports", url: "https://bein-esp-xumo.amagi.tv/playlist.m3u8" },
+            { name: "SKY SPORTS ACTION", logo: "https://via.placeholder.com/44/131322/e50914?text=Sky+Act", category: "sports", url: "http://sewv654wfcsdwfi87fwvgbngh.siauliairsavlt.pw/iptv/VCQ4ADX96VH4G8PY7URBWRQU/9155/index.m3u8" },
+            { name: "SKY SPORT LALIGA 🇲🇽", logo: "https://via.placeholder.com/44/131322/e50914?text=Sky+Lal", category: "sports", url: "http://179.60.224.196:8000/play/a0i7/index.m3u8" },
+            { name: "SKY SPORT LALIGA 🇲🇽 (Alt)", logo: "https://via.placeholder.com/44/131322/e50914?text=Sky+Lal2", category: "sports", url: "http://181.78.109.48:9998/play/a06r/index.m3u8" },
+            { name: "DEPORTE - SKY SPORTS", logo: "https://via.placeholder.com/44/131322/e50914?text=Sky+Dep", category: "sports", url: "http://177.10.184.193:8000/play/a0eh/index.m3u8" },
+            { name: "Sky Sport MX", logo: "https://via.placeholder.com/44/131322/e50914?text=Sky+MX", category: "sports", url: "http://45.5.118.152:8000/play/a08f/index.m3u8" },
+            { name: "SKY SPORTS GT", logo: "https://via.placeholder.com/44/131322/e50914?text=Sky+GT", category: "sports", url: "http://45.171.64.30:2000/play/a08m/index.m3u8" },
+            { name: "Hub Sports 2 HD", logo: "https://via.placeholder.com/44/131322/ffffff?text=Hub+2", category: "sports", url: "http://tv-premium-pro.com/live/wezqqszfr2/i7481xvrdf/280823.m3u8" },
+            { name: "Hub Sports 3 HD", logo: "https://via.placeholder.com/44/131322/ffffff?text=Hub+3", category: "sports", url: "http://tv-premium-pro.com/live/wezqqszfr2/i7481xvrdf/280824.m3u8" },
+            { name: "GO 3 Sport 1 HD", logo: "https://via.placeholder.com/44/131322/00ff00?text=GO3+1", category: "sports", url: "http://ytoxw6un.ottclub.xyz/iptv/KCUHA6DGYYVA8ZZFUPQV3KZH/18000/index.m3u8" },
+            { name: "GO 3 Sport 2 HD", logo: "https://via.placeholder.com/44/131322/00ff00?text=GO3+2", category: "sports", url: "http://ytoxw6un.ottclub.xyz/iptv/KCUHA6DGYYVA8ZZFUPQV3KZH/18001/index.m3u8" },
+            { name: "DSPORTS FHD", logo: "https://via.placeholder.com/44/131322/00ffaa?text=DSports", category: "sports", url: "https://otte.live.fly.ww.aiv-cdn.net/gru-nitro/live/clients/dash/enc/ubehitlwzo/out/v1/8e09c381a51f4366a19e979418112e8f/cenc.mpd" },
+            { name: "DSports Option 1", logo: "https://via.placeholder.com/44/131322/00ffaa?text=DS+1", category: "sports", url: "http://190.108.83.69:8000/play/a05w/index.m3u8" },
+            { name: "DSports Option 2", logo: "https://via.placeholder.com/44/131322/00ffaa?text=DS+2", category: "sports", url: "http://148.222.230.201:8000/play/a0pk/index.m3u8" },
+            { name: "DSports Option 3", logo: "https://via.placeholder.com/44/131322/00ffaa?text=DS+3", category: "sports", url: "http://148.222.230.197:8000/play/a0mm/index.m3u8" },
+            { name: "DSports Option 4", logo: "https://via.placeholder.com/44/131322/00ffaa?text=DS+4", category: "sports", url: "http://181.64.27.65:8000/play/a0dq/index.m3u8" },
+            { name: "DSports Option 5", logo: "https://via.placeholder.com/44/131322/00ffaa?text=DS+5", category: "sports", url: "http://38.187.7.252:8000/play/a03d/index.m3u8" },
+            { name: "DSports Option 6", logo: "https://via.placeholder.com/44/131322/00ffaa?text=DS+6", category: "sports", url: "http://190.223.48.46:8000/play/a028/index.m3u8" },
+            { name: "DSports Option 7", logo: "https://via.placeholder.com/44/131322/00ffaa?text=DS+7", category: "sports", url: "http://191.97.59.33:8000/play/a09t/index.m3u8" },
+            { name: "DSports Option 8", logo: "https://via.placeholder.com/44/131322/00ffaa?text=DS+8", category: "sports", url: "http://190.117.20.37:8000/play/a08d/index.m3u" },
+            { name: "DSports Option 9", logo: "https://via.placeholder.com/44/131322/00ffaa?text=DS+9", category: "sports", url: "http://177.53.152.117:8000/play/a07d/index.m3u8" },
+            { name: "DSports Option 10", logo: "https://via.placeholder.com/44/131322/00ffaa?text=DS+10", category: "sports", url: "http://8.243.126.131:8000/play/a05a/index.m3u8" },
+            { name: "DSports Option 11", logo: "https://via.placeholder.com/44/131322/00ffaa?text=DS+11", category: "sports", url: "http://177.10.184.193:8000/play/a0fc/index.m3u8" },
+            { name: "DSports Option 12", logo: "https://via.placeholder.com/44/131322/00ffaa?text=DS+12", category: "sports", url: "http://217.26.190.76:8888/play/a0co/index.m3u8" },
+            { name: "DSports 1 🇦🇷", logo: "https://via.placeholder.com/44/131322/00ffaa?text=DS+ARG", category: "sports", url: "http://190.117.20.37:8000/play/a08d/index.m3u8" },
+            { name: "DSports +", logo: "https://via.placeholder.com/44/131322/00ffaa?text=DS+", category: "sports", url: "http://217.26.190.76:8888/play/a0jb/index.m3u8" },
+            { name: "DSports Base", logo: "https://via.placeholder.com/44/131322/00ffaa?text=DS+Base", category: "sports", url: "http://38.226.210.46:8000/play/A008/index.m3u8" },
+            { name: "DSports Alt", logo: "https://via.placeholder.com/44/131322/00ffaa?text=DS+Alt", category: "sports", url: "http://147.135.114.221:8001/play/a00m/index.m3u8" },
+            { name: "ESPN Premium", logo: "https://via.placeholder.com/44/131322/ff3300?text=ESPN+P", category: "sports", url: "http://205.235.6.29:8000/play/a0pz/index.m3u8" },
+            { name: "ESPN Premium Alt", logo: "https://via.placeholder.com/44/131322/ff3300?text=ESPN+P2", category: "sports", url: "http://217.26.190.76:8888/play/a0es/index.m3u8" },
+            { name: "ESPN Premium HD", logo: "https://via.placeholder.com/44/131322/ff3300?text=ESPN+PHD", category: "sports", url: "http://181.205.130.194:4000/play/a0fk" },
+            { name: "ESPN PREMIUM CHI", logo: "https://via.placeholder.com/44/131322/ff3300?text=ESPN+CHI", category: "sports", url: "http://186.33.40.97:8789/play/22" },
+            { name: "ESPN PREMIUN 1", logo: "https://via.placeholder.com/44/131322/ff3300?text=ESPN+1", category: "sports", url: "http://190.7.19.197:232/play/a038/index.m3u8" },
+            { name: "ESPN 5", logo: "https://via.placeholder.com/44/131322/ff3300?text=ESPN+5", category: "sports", url: "http://181.118.158.103:8000/play/a03c/index.m3u8" },
+            { name: "ESPN ARG", logo: "https://via.placeholder.com/44/131322/ff3300?text=ESPN+ARG", category: "sports", url: "http://45.170.130.224:8000/play/a04l/index.m3u8" },
+            { name: "ESPN", logo: "https://via.placeholder.com/44/131322/ff3300?text=ESPN", category: "sports", url: "http://205.235.6.29:8000/play/a0zf/index.m3u8" },
+            { name: "ESPN 7", logo: "https://via.placeholder.com/44/131322/ff3300?text=ESPN+7", category: "sports", url: "http://205.235.6.29:8000/play/a0zv/index.m3u8" },
+            { name: "ESPN 7 Principal", logo: "https://via.placeholder.com/44/131322/ff3300?text=ESPN+7M", category: "sports", url: "http://181.118.153.15:8000/play/rq26/index.m3u8" },
+            { name: "ESPN Base", logo: "https://via.placeholder.com/44/131322/ff3300?text=ESPN+B", category: "sports", url: "http://181.118.158.103:8000/play/a038/index.m3u8" },
+            { name: "ESPN 2", logo: "https://via.placeholder.com/44/131322/ff3300?text=ESPN+2", category: "sports", url: "http://181.118.158.103:8000/play/a039/index.m3u8" },
+            { name: "ESPN 4", logo: "https://via.placeholder.com/44/131322/ff3300?text=ESPN+4", category: "sports", url: "http://45.5.119.43:4000/play/a028/index.m3u8" },
+            { name: "ESPN 2 Alt", logo: "https://via.placeholder.com/44/131322/ff3300?text=ESPN+2A", category: "sports", url: "http://45.5.119.43:4000/play/a053/index.m3u8" },
+            { name: "ESPN CO", logo: "https://via.placeholder.com/44/131322/ff3300?text=ESPN+CO", category: "sports", url: "http://181.205.130.194:4000/play/a08n" },
+            { name: "ESPN 6 HD", logo: "https://via.placeholder.com/44/131322/ff3300?text=ESPN+6H", category: "sports", url: "http://181.205.130.194:4000/play/a0eh" },
+            { name: "ESPN 2 🇦🇷", logo: "https://via.placeholder.com/44/131322/ff3300?text=ESPN+2AR", category: "sports", url: "http://191.97.49.82:8001/play/a00m/index.m3u8" },
+            { name: "ESPN 2 🇦🇷 (Alt)", logo: "https://via.placeholder.com/44/131322/ff3300?text=ESPN+2AR2", category: "sports", url: "http://181.205.130.194:4000/play/a07i" },
+            { name: "ESPN 2 🇨🇴", logo: "https://via.placeholder.com/44/131322/ff3300?text=ESPN+2CO", category: "sports", url: "http://200.10.30.241:8000/play/a01r/index.m3u8" },
+            { name: "ESPN 🇦🇷", logo: "https://via.placeholder.com/44/131322/ff3300?text=ESPN+ARG", category: "sports", url: "http://181.118.156.46:8000/play/a04g/index.m3u8" },
+            { name: "ESPN5 HD", logo: "https://via.placeholder.com/44/131322/ff3300?text=ESPN+5H", category: "sports", url: "http://181.205.130.194:4000/play/a0fs" },
+            { name: "ESPN HD", logo: "https://via.placeholder.com/44/131322/ff3300?text=ESPN+HD", category: "sports", url: "http://181.205.130.194:4000/play/a07j" },
+            { name: "TNT Sport", logo: "https://via.placeholder.com/44/131322/e50914?text=TNT", category: "sports", url: "http://205.235.6.29:8000/play/a0xa/index.m3u8" },
+            { name: "TNT Sport Premium", logo: "https://via.placeholder.com/44/131322/e50914?text=TNT+Prem", category: "sports", url: "http://205.235.6.29:8000/play/a104/index.m3u8" },
+            { name: "TNT Sports ARG", logo: "https://via.placeholder.com/44/131322/e50914?text=TNT+ARG", category: "sports", url: "https://1nyaler.streamhostingcdn.top/stream/30/index.m3u8" },
+            { name: "TNT Premium (Principal)", logo: "https://via.placeholder.com/44/131322/e50914?text=TNT+PrM", category: "sports", url: "http://38.226.210.46:8000/play/a05m/index.m3u8" },
+            { name: "TNT Sports Premium 🇬🇧", logo: "https://via.placeholder.com/44/131322/e50914?text=TNT+UK", category: "sports", url: "http://200.115.120.1:8000/play/ca040/index.m3u8" },
+            { name: "FOX Sports (720)", logo: "https://via.placeholder.com/44/131322/00ffaa?text=Fox+72", category: "sports", url: "https://d1jzu95oc8fgt3.cloudfront.net/FOX_Sports720p.m3u8" },
+            { name: "FOX NY", logo: "https://via.placeholder.com/44/131322/00ffaa?text=Fox+NY", category: "sports", url: "https://cdn-uw2-prod.tsv2.amagi.tv/linear/amg00488-foxdigital-wnyw-lgus/playlist.m3u8" },
+            { name: "FOX Sports 2 [2]", logo: "https://via.placeholder.com/44/131322/00ffaa?text=Fox+S2", category: "sports", url: "http://190.61.101.11:7050/play/a08v/index.m3u8" },
+            { name: "Fox Sports 3", logo: "https://via.placeholder.com/44/131322/00ffaa?text=Fox+S3", category: "sports", url: "http://45.167.2.138:8000/play/a0qn/index.m3u8" },
+            { name: "Fox SPORTS 3 (Alt)", logo: "https://via.placeholder.com/44/131322/00ffaa?text=Fox+S3A", category: "sports", url: "http://45.5.119.43:4000/play/a024/index.m3u8" },
+            { name: "Fox Sports 🇮🇳", logo: "https://via.placeholder.com/44/131322/00ffaa?text=Fox+IN", category: "sports", url: "http://y3fqd48g.megatv.fun/iptv/NRLXRWSBWBPLN4/19146/index.m3u8" },
+            { name: "Fox Deportes", logo: "https://via.placeholder.com/44/131322/00ffaa?text=Fox+Dep", category: "sports", url: "http://23.237.104.106:8080/USA_FOX_DEPORTES/index.m3u8" },
+            { name: "FS1", logo: "https://via.placeholder.com/44/131322/00ffaa?text=FS1", category: "sports", url: "http://41.223.30.230/FOXSPORTS1/index.m3u8" },
+            { name: "FX SPORTS 2", logo: "https://via.placeholder.com/44/131322/00ffaa?text=FX+S2", category: "sports", url: "https://otte.live.fly.ww.aiv-cdn.net/iad-nitro/live/clients/dash/enc/tepjqej1ys/out/v1/c9c9159baee749a19612b1598495859a/cenc.mpd" },
+            { name: "TyC Sports", logo: "https://via.placeholder.com/44/131322/00aaff?text=TyC", category: "sports", url: "http://190.60.37.154:45000/play/a05a/index.m3u8" },
+            { name: "TyC Sports ARG", logo: "https://via.placeholder.com/44/131322/00aaff?text=TyC+AR", category: "sports", url: "https://1nyaler.streamhostingcdn.top/stream/84/index.m3u8" },
+            { name: "TyC Sports Live", logo: "https://via.placeholder.com/44/131322/00aaff?text=TyC+L", category: "sports", url: "http://38.44.109.41:8003/play/a02l/index.m3u8" },
+            { name: "TyC SPORTS Base", logo: "https://via.placeholder.com/44/131322/00aaff?text=TyC+B", category: "sports", url: "http://190.108.93.75:8001/play/a05d/index.m3u8" },
+            { name: "TyC SPORTS Internacional", logo: "https://via.placeholder.com/44/131322/00aaff?text=TyC+Int", category: "sports", url: "http://190.7.19.197:232/play/a04w/index.m3u8" },
+            { name: "DAZN 2", logo: "https://via.placeholder.com/44/131322/ffffff?text=DAZN+2", category: "sports", url: "http://23.237.104.106:8080/USA_DAZN_2/index.m3u8" },
+            { name: "DAZN 3", logo: "https://via.placeholder.com/44/131322/ffffff?text=DAZN+3", category: "sports", url: "http://23.237.104.106:8080/USA_DAZN_3/index.m3u8" },
+            { name: "DAZN 4", logo: "https://via.placeholder.com/44/131322/ffffff?text=DAZN+4", category: "sports", url: "http://23.237.104.106:8080/USA_DAZN_4/index.m3u8" },
+            { name: "DAZN 5", logo: "https://via.placeholder.com/44/131322/ffffff?text=DAZN+5", category: "sports", url: "http://23.237.104.106:8080/USA_DAZN_5/index.m3u8" },
+            { name: "DAZN 6", logo: "https://via.placeholder.com/44/131322/ffffff?text=DAZN+6", category: "sports", url: "http://23.237.104.106:8080/USA_DAZN_6/index.m3u8" },
+            { name: "DAZN 1 Elv", logo: "https://via.placeholder.com/44/131322/ffffff?text=DAZN+1E", category: "sports", url: "http://znty.dyndns.org:5010/hls/eleven1.m3u8" },
+            { name: "DAZN 2 Elv", logo: "https://via.placeholder.com/44/131322/ffffff?text=DAZN+2E", category: "sports", url: "http://znty.dyndns.org:5010/hls/eleven2.m3u8" },
+            { name: "DAZN 3 Elv", logo: "https://via.placeholder.com/44/131322/ffffff?text=DAZN+3E", category: "sports", url: "http://znty.dyndns.org:5010/hls/eleven3.m3u8" },
+            { name: "DAZN 4 Elv", logo: "https://via.placeholder.com/44/131322/ffffff?text=DAZN+4E", category: "sports", url: "http://znty.dyndns.org:5010/hls/eleven4.m3u8" },
+            { name: "DAZN 5 Elv", logo: "https://via.placeholder.com/44/131322/ffffff?text=DAZN+5E", category: "sports", url: "http://znty.dyndns.org:5010/hls/eleven5.m3u8" },
+            { name: "Dazn 1 🇵🇹", logo: "https://via.placeholder.com/44/131322/ffffff?text=DAZN+1PT", category: "sports", url: "http://wo0dyefk.dienalt.org/iptv/DV3AC2Q6YSR9XE/2531/index.m3u8" },
+            { name: "Dazn 1 🇵🇹 Alt", logo: "https://via.placeholder.com/44/131322/ffffff?text=DAZN+1PTA", category: "sports", url: "http://wo0dyefk.dienalt.org/iptv/DV3AC2Q6YSR9XE/19158/index.m3u8" },
+            { name: "Dazn 2 🇵🇹", logo: "https://via.placeholder.com/44/131322/ffffff?text=DAZN+2PT", category: "sports", url: "http://wo0dyefk.dienalt.org/iptv/DV3AC2Q6YSR9XE/2532/index.m3u8" },
+            { name: "Dazn 3 🇵🇹", logo: "https://via.placeholder.com/44/131322/ffffff?text=DAZN+3PT", category: "sports", url: "http://wo0dyefk.dienalt.org/iptv/DV3AC2Q6YSR9XE/7062/index.m3u8" },
+            { name: "Dazn 4 🇵🇹", logo: "https://via.placeholder.com/44/131322/ffffff?text=DAZN+4PT", category: "sports", url: "http://wo0dyefk.dienalt.org/iptv/DV3AC2Q6YSR9XE/2534/index.m3u8" },
+            { name: "Dazn 5 🇵🇹", logo: "https://via.placeholder.com/44/131322/ffffff?text=DAZN+5PT", category: "sports", url: "http://wo0dyefk.dienalt.org/iptv/DV3AC2Q6YSR9XE/2535/index.m3u8" },
+            { name: "BEIN SPORTS 2 HD", logo: "https://via.placeholder.com/44/131322/ffffff?text=beIN+2H", category: "sports", url: "http://foxbleu-cdn.com/live/e8:aa:cb:c4:bf:92/aMzpeeG/78379.ts" },
+            { name: "BEIN SPORTS 3 HD", logo: "https://via.placeholder.com/44/131322/ffffff?text=beIN+3H", category: "sports", url: "http://foxbleu-cdn.com/live/e8:aa:cb:c4:bf:92/aMzpeeG/89342.ts" },
+            { name: "BEIN SPORTS 4 HD", logo: "https://via.placeholder.com/44/131322/ffffff?text=beIN+4H", category: "sports", url: "http://foxbleu-cdn.com/live/e8:aa:cb:c4:bf:92/aMzpeeG/78381.ts" },
+            { name: "BEIN SPORTS 5 HD", logo: "https://via.placeholder.com/44/131322/ffffff?text=beIN+5H", category: "sports", url: "http://foxbleu-cdn.com/live/e8:aa:cb:c4:bf:92/aMzpeeG/78382.ts" },
+            { name: "BEIN SPORTS 6 HD", logo: "https://via.placeholder.com/44/131322/ffffff?text=beIN+6H", category: "sports", url: "http://foxbleu-cdn.com/live/e8:aa:cb:c4:bf:92/aMzpeeG/78383.ts" },
+            { name: "beIN SPORTS 4 HD (Ott)", logo: "https://via.placeholder.com/44/131322/ffffff?text=beIN+4O", category: "sports", url: "http://ytoxw6un.ottclub.xyz/iptv/VSQZTL9D68WBD9/6125/index.m3u8" },
+            { name: "beIN SPORTS 5 HD (Ott)", logo: "https://via.placeholder.com/44/131322/ffffff?text=beIN+5O", category: "sports", url: "http://ytoxw6un.ottclub.xyz/iptv/VSQZTL9D68WBD9/6126/index.m3u8" },
+            { name: "BEIN SPORTS 1 AU", logo: "https://via.placeholder.com/44/131322/ffffff?text=beIN+1AU", category: "sports", url: "https://otte.live.fly.ww.aiv-cdn.net/syd-nitro/live/clients/dash/enc/ghwcl6hv68/out/v1/83536910d8034e9b9895a20fbe1c1687/cenc.mpd" },
+            { name: "BEIN SPORTS 2 AU", logo: "https://via.placeholder.com/44/131322/ffffff?text=beIN+2AU", category: "sports", url: "https://otte.live.fly.ww.aiv-cdn.net/syd-nitro/live/clients/dash/enc/8m8cd46i1t/out/v1/83985c68e4174e90a58a1f2c024be4c9/cenc.mpd" },
+            { name: "BEIN SPORTS 3 AU", logo: "https://via.placeholder.com/44/131322/ffffff?text=beIN+3AU", category: "sports", url: "https://a83aivottlinear-a.akamaihd.net/OTTB/syd-nitro/live/clients/dash/enc/q4u5nwaogz/out/v1/18de6d3e65934f3a8de4358e69eab86c/cenc.mpd" },
+            { name: "BEIN Sports 1 1080P", logo: "https://via.placeholder.com/44/131322/ffffff?text=beIN+1St", category: "sports", url: "https://andro.226503.xyz/checklist/androstreamlivebs1.m3u8" },
+            { name: "BEIN Sports 2 1080P", logo: "https://via.placeholder.com/44/131322/ffffff?text=beIN+2St", category: "sports", url: "https://andro.226503.xyz/checklist/androstreamlivebs2.m3u8" },
+            { name: "BEIN Sports 3 1080P", logo: "https://via.placeholder.com/44/131322/ffffff?text=beIN+3St", category: "sports", url: "https://andro.226503.xyz/checklist/androstreamlivebs3.m3u8" },
+            { name: "BEIN Sports 4 1080P", logo: "https://via.placeholder.com/44/131322/ffffff?text=beIN+4St", category: "sports", url: "https://andro.226503.xyz/checklist/androstreamlivebs4.m3u8" },
+            { name: "BEIN Sports 5 1080P", logo: "https://via.placeholder.com/44/131322/ffffff?text=beIN+5St", category: "sports", url: "https://andro.226503.xyz/checklist/androstreamlivebs5.m3u8" },
+            { name: "BEIN SPORTS 1 Turkey", logo: "https://via.placeholder.com/44/131322/ffffff?text=beIN+TR1", category: "sports", url: "https://andro.226503.xyz/checklist/androstreamlivebiraz1.m3u8" },
+            { name: "BEIN SPORTS 2 Turkey", logo: "https://via.placeholder.com/44/131322/ffffff?text=beIN+TR2", category: "sports", url: "https://andro.okan11gote12sokan.cfd/checklist/androstreamlivebs2.m3u8" },
+            { name: "BEIN SPORTS 3 Turkey", logo: "https://via.placeholder.com/44/131322/ffffff?text=beIN+TR3", category: "sports", url: "https://andro.okan11gote12sokan.cfd/checklist/androstreamlivebs3.m3u8" },
+            { name: "BEIN SPORTS 4 Turkey", logo: "https://via.placeholder.com/44/131322/ffffff?text=beIN+TR4", category: "sports", url: "https://andro.okan11gote12sokan.cfd/checklist/androstreamlivebs4.m3u8" },
+            { name: "BEIN SPORTS France", logo: "https://via.placeholder.com/44/131322/ffffff?text=beIN+FR", category: "sports", url: "http://99.27.51.147:8080/BeinSport/mpegts" },
+            { name: "BEIN SPORTS 3 France", logo: "https://via.placeholder.com/44/131322/ffffff?text=beIN+FR3", category: "sports", url: "http://99.27.51.147:8080/BeinSport3/mpegts" },
+            { name: "BEIN SPORTS 3 France Alt", logo: "https://via.placeholder.com/44/131322/ffffff?text=beIN+FR3A", category: "sports", url: "http://145.239.5.177/559/mpegts" },
+            { name: "Bein Sport 1 🇫🇷 Base", logo: "https://via.placeholder.com/44/131322/ffffff?text=beIN+FR1B", category: "sports", url: "http://99.27.51.147:8080/BeinSport/index.m3u8" },
+            { name: "Bein Sport 3 🇫🇷 Base", logo: "https://via.placeholder.com/44/131322/ffffff?text=beIN+FR3B", category: "sports", url: "http://99.27.51.147:8080/BeinSport3/index.m3u8" },
+            { name: "Bein Sport 3 🇫🇷 Index", logo: "https://via.placeholder.com/44/131322/ffffff?text=beIN+FR3I", category: "sports", url: "http://145.239.5.177:80/559/index.m3u8" },
+            { name: "Матч! 🇷🇺 Feed 1", logo: "https://via.placeholder.com/44/131322/ffffff?text=Match+1", category: "sports", url: "http://catchup.videoline.ru/match/tracks-v1a1/mono.m3u8" },
+            { name: "Матч! 🇷🇺 Feed 2", logo: "https://via.placeholder.com/44/131322/ffffff?text=Match+2", category: "sports", url: "http://bl.video.matchtv.ru/media/playlist/free_d46d0cf1712c0542ec7fd4f0808f600a_hd/17_89756005/1080/e6bef86de8a133cd7b27deb040758a00/4796141934.m3u8" },
+            { name: "Матচ! 🇷🇺 Feed 3", logo: "https://via.placeholder.com/44/131322/ffffff?text=Match+3", category: "sports", url: "http://cdntv.online/low/9mlxywika2/48.m3u8" },
+            { name: "Матч! 🇷🇺 Tuva", logo: "https://via.placeholder.com/44/131322/ffffff?text=Match+Tu", category: "sports", url: "http://tv.tuva.ru/machtv/index.m3u8" },
+            { name: "Матч! 🇷🇺 Base", logo: "https://via.placeholder.com/44/131322/ffffff?text=Match+B", category: "sports", url: "http://185.46.48.18:80/match/tracks-v1a1/mono.m3u8" },
+            { name: "Матч! 🇷🇺 Play", logo: "https://via.placeholder.com/44/131322/ffffff?text=Match+P", category: "sports", url: "http://5.188.221.43:8080/play/match" },
+            { name: "Матч! 🇷🇺 Alt", logo: "https://via.placeholder.com/44/131322/ffffff?text=Match+A", category: "sports", url: "http://95.47.155.244:8001/play/a003" },
+            { name: "Матч! 4 HD 🇷🇺", logo: "https://via.placeholder.com/44/131322/ffffff?text=Match+4", category: "sports", url: "http://46.149.191.217:9010/play/a019" },
+            { name: "МАТЧ! ФУТБOЛ 1HD 🇷🇺", logo: "https://via.placeholder.com/44/131322/ffffff?text=Fut+1", category: "sports", url: "http://cdntv.online/low/9mlxywika2/55.m3u8" },
+            { name: "МАТЧ! ФУТБOЛ 1HD 🇷🇺 (Alt)", logo: "https://via.placeholder.com/44/131322/ffffff?text=Fut+1A", category: "sports", url: "http://193.25.8.59:8000/fut" },
+            { name: "МАТЧ! ФУТБOЛ 2HD 🇷🇺", logo: "https://via.placeholder.com/44/131322/ffffff?text=Fut+2", category: "sports", url: "http://193.25.8.59:8000/fut2" },
+            { name: "МАТЧ! ФУТБOЛ 2HD 🇷🇺 (Alt)", logo: "https://via.placeholder.com/44/131322/ffffff?text=Fut+2A", category: "sports", url: "http://cdntv.online/low/9mlxywika2/56.m3u8" },
+            { name: "МАТЧ! ФУТБOЛ 3HD 🇷🇺", logo: "https://via.placeholder.com/44/131322/ffffff?text=Fut+3", category: "sports", url: "http://185.57.68.33/110/mpegts" },
+            { name: "Матч! Футбол 3 HD 🇷🇺 (Playlist)", logo: "https://via.placeholder.com/44/131322/ffffff?text=Fut+3P", category: "sports", url: "http://185.57.68.33:8091/110/playlist.m3u8" },
+            { name: "МАТЧ! ФУТБOЛ 3HD 🇷🇺 (Cdn)", logo: "https://via.placeholder.com/44/131322/ffffff?text=Fut+3C", category: "sports", url: "http://cdntv.online/low/9mlxywika2/57.m3u8" },
+            { name: "Футбол 3 (SD) 🇷🇺", logo: "https://via.placeholder.com/44/131322/ffffff?text=Fut+3SD", category: "sports", url: "http://185.57.68.33:80/110/index.m3u8" },
+
+            // Category: extra sports
+            { name: "FANCODE Engine 1", logo: "https://via.placeholder.com/44/131322/ffffff?text=Fan+1", category: "extra", url: "https://abfjk4haaaaaaaampv6ofhkihi4r6.bia-cf.live.pv-cdn.net/iad-nitro/live/clients/dash/enc/fdb3pubmek/out/v1/aefca6420f944a9482e117f315de535f/cenc.mpd" },
+            { name: "FANCODE Engine 2", logo: "https://via.placeholder.com/44/131322/ffffff?text=Fan+2", category: "extra", url: "https://otte.cache.aiv-cdn.net/iad-nitro/live/clients/dash/enc/fdb3pubmek/out/v1/aefca6420f944a9482e117f315de535f/cenc.mpd" },
+            { name: "FANCODE Engine 3 (SD)", logo: "https://via.placeholder.com/44/131322/ffffff?text=Fan+SD", category: "extra", url: "https://otte.live.fly.ww.aiv-cdn.net/sin-nitro/live/clients/dash-sd/enc/v8g0dlo4z8/out/v1/946019f85dc64ae99ff9ce64a9727a62/cenc-sd.mpd" },
+            { name: "Willow SPORTS", logo: "https://via.placeholder.com/44/131322/ffffff?text=Willow", category: "extra", url: "https://otte.cache.aiv-cdn.net/bom-nitro/live/clients/dash/enc/tll6uwepxa/out/v1/a7f67cbb33df46539312956427343886/cenc.mpd" },
+            { name: "Willow Sports (1080p)", logo: "https://via.placeholder.com/44/131322/ffffff?text=Willow+10", category: "extra", url: "https://d36r8jifhgsk5j.cloudfront.net/Willow_TV.m3u8" },
+            { name: "DAZN FAST+", logo: "https://via.placeholder.com/44/131322/ffffff?text=DAZN+F", category: "extra", url: "https://ac-003.live.p7s1video.net/63f8995e/t_003/dazn-fast-hd/cenc-default.mpd" },
+            { name: "DAZN COMBAT", logo: "https://via.placeholder.com/44/131322/ffffff?text=DAZN+C", category: "extra", url: "https://dazn-combat-rakuten.amagi.tv/hls/amagi_hls_data_rakutenAA-dazn-combat-rakuten/CDN/master.m3u8" },
+            { name: "Redbull TV Master", logo: "https://via.placeholder.com/44/131322/ffffff?text=RB+TV", category: "extra", url: "https://rbmn-live.akamaized.net/hls/live/590964/BoRB-AT/master_3360.m3u8" },
+            { name: "Red Bull TV Live", logo: "https://via.placeholder.com/44/131322/ffffff?text=RB+L", category: "extra", url: "https://rbmn-live.akamaized.net/hls/live/590964/BoRB-AT/master.m3u8" },
+            { name: "Red Bull TV Brasil", logo: "https://via.placeholder.com/44/131322/ffffff?text=RB+BR", category: "extra", url: "https://d03ae6b5c6724c24867e97a3dc04934a.mediatailor.us-west-2.amazonaws.com/v1/master/ba62fe743df0fe93366eba3a257d792884136c7f/LINEAR-1026-WORBBRPTFAST-WHALETVPLUS/1026/hls/master/playlist.m3u8" },
+            { name: "Red Bull TV Australia", logo: "https://via.placeholder.com/44/131322/ffffff?text=RB+AU", category: "extra", url: "https://db34cc6127ac459db55cab5f97cd66b9.mediatailor.us-west-2.amazonaws.com/v1/master/ba62fe743df0fe93366eba3a257d792884136c7f/LINEAR-680-WORBAUENFAST-WHALETVPLUS/680/whaletvplus/hls/master/playlist.m3u8" },
+            { name: "Red Bull TV Espanha", logo: "https://via.placeholder.com/44/131322/ffffff?text=RB+ES", category: "extra", url: "https://886bd3fbc782459f8de7555d32d7e9ce.mediatailor.us-west-2.amazonaws.com/v1/master/ba62fe743df0fe93366eba3a257d792884136c7f/LINEAR-957-WORBLATAMESFAST-WHALETVPLUS/957/whaletvplus/hls/master/playlist.m3u8" },
+            { name: "Claro Sports 1", logo: "https://via.placeholder.com/44/131322/ffffff?text=Claro+1", category: "extra", url: "http://45.167.1.136:8000/play/a00d" },
+            { name: "Claro Sports 2", logo: "https://via.placeholder.com/44/131322/ffffff?text=Claro+2", category: "extra", url: "http://45.5.118.152:8000/play/a0ah/index.m3u8" },
+            { name: "DEPORTE - Claro Sports", logo: "https://via.placeholder.com/44/131322/ffffff?text=Claro+Dep", category: "extra", url: "https://dai.google.com/linear/hls/event/yINISWAPQ0CPhPixe-40wQ/master.m3u8" },
+            { name: "CLARO SPORTS MASTER", logo: "https://via.placeholder.com/44/131322/ffffff?text=Claro+M", category: "extra", url: "https://dai.google.com/linear/hls/event/_OKWx76jT7mivD6d-25QAw/master.m3u8" },
+            { name: "CLARO SPORTS Base", logo: "https://via.placeholder.com/44/131322/ffffff?text=Claro+B", category: "extra", url: "http://162.19.255.233:8080/play/UNbAl57p9hXZClOu56FCTUSaL5q1VtS-E1wCfb1nvO4/m3u8" },
+            { name: "UFC FIGHT PASS 1", logo: "https://via.placeholder.com/44/131322/ffffff?text=UFC", category: "extra", url: "http://vipmdvmxqha.top:8080/VIP0175170262473041/91702624730057/129980" },
+            { name: "Combate", logo: "https://via.placeholder.com/44/131322/ffffff?text=Combate", category: "extra", url: "http://daleplaytv.vip:80//live/123MMM/654321/306483.ts" },
+            { name: "Fubo Sports 2", logo: "https://via.placeholder.com/44/131322/ffffff?text=Fubo", category: "extra", url: "https://otte.live.fly.ww.aiv-cdn.net/pdx-nitro/live/clients/dash/enc/uiffe4jhf0/out/v1/3534efafca8c4815adbb4d2e9a1fe003/cenc.mpd" },
+            { name: "Tigo Sports", logo: "https://via.placeholder.com/44/131322/ffffff?text=Tigo", category: "extra", url: "http://181.78.17.52:8000/play/a0rq/index.m3u8" },
+            { name: "TIGO Sports (Alt)", logo: "https://via.placeholder.com/44/131322/ffffff?text=Tigo+A", category: "extra", url: "http://45.5.119.43:4000/play/a05t/index.m3u8" },
+            { name: "Win Sports", logo: "https://via.placeholder.com/44/131322/ffffff?text=Win", category: "extra", url: "http://181.78.17.52:8000/play/a0pw/index.m3u8" },
+            { name: "WIN SPORTS (Alt)", logo: "https://via.placeholder.com/44/131322/ffffff?text=Win+A", category: "extra", url: "http://181.78.71.71:18000/play/a03p/index.m3u8" },
+            { name: "win+", logo: "https://via.placeholder.com/44/131322/ffffff?text=Win+", category: "extra", url: "http://190.60.37.154:45000/play/a00q/index.m3u8" },
+            { name: "WIN SPORTS Base", logo: "https://via.placeholder.com/44/131322/ffffff?text=Win+B", category: "extra", url: "http://190.60.39.195:8000/play/a0ug/index.m3u8" },
+            { name: "WIN SPORTS+ HD", logo: "https://via.placeholder.com/44/131322/ffffff?text=Win+S+", category: "extra", url: "http://181.205.130.194:4000/play/a0fu" },
+            { name: "Winsport 2500", logo: "https://via.placeholder.com/44/131322/ffffff?text=Win+25", category: "extra", url: "http://181.78.85.59:2500/play/a030/index.m3u8" },
+            { name: "Win1", logo: "https://via.placeholder.com/44/131322/ffffff?text=Win+1", category: "extra", url: "http://190.60.37.118:4000/play/a0b2" },
+            { name: "Win2", logo: "https://via.placeholder.com/44/131322/ffffff?text=Win+2", category: "extra", url: "http://190.60.37.118:4000/play/a0bw" },
+            { name: "Eurosport 1 (FR)", logo: "https://via.placeholder.com/44/131322/ffffff?text=Euro+1", category: "extra", url: "http://151.80.18.177:86/Eurosport_HD/playlist.m3u8" },
+            { name: "Eurosport 2 (FR)", logo: "https://via.placeholder.com/44/131322/ffffff?text=Euro+2", category: "extra", url: "http://151.80.18.177:86/Eurosport_2_HD/playlist.m3u8" },
+            { name: "Eurosport 1 TS", logo: "https://via.placeholder.com/44/131322/ffffff?text=Euro+1T", category: "extra", url: "http://151.80.18.177:86/Eurosport_HD/mpegts" },
+            { name: "Eurosport 2 TS", logo: "https://via.placeholder.com/44/131322/ffffff?text=Euro+2T", category: "extra", url: "http://151.80.18.177:86/Eurosport_2_HD/mpegts" },
+            
+            // Uncategorized / Extra Public Links matching requirement
+            { name: "IDMANTV 🇹🇷", logo: "https://via.placeholder.com/44/131322/ffffff?text=IDMAN", category: "extra", url: "https://str2.yodacdn.net/idman_300_to_small/tracks-v1a1/mono.m3u8" },
+            { name: "2TV Sport 🇳🇴", logo: "https://via.placeholder.com/44/131322/ffffff?text=2TV", category: "extra", url: "https://tv.cdn.xsg.ge/gpb-2tv/index.m3u8" },
+            { name: "FGN", logo: "https://via.placeholder.com/44/131322/ffffff?text=FGN", category: "extra", url: "http://103.175.73.12:8080/live/856/856_0.m3u8" },
+            { name: "Telemundo", logo: "https://via.placeholder.com/44/131322/ffffff?text=Tele", category: "extra", url: "https://nbculocallive.akamaized.net/hls/live/2037499/puertorico/stream1/master_720.m3u8" },
+            { name: "Telemundo 2", logo: "https://via.placeholder.com/44/131322/ffffff?text=Tele+2", category: "extra", url: "https://nbculocallive.akamaized.net/hls/live/2037499/puertorico/stream1/master.m3u8" },
+            { name: "Bein US", logo: "https://via.placeholder.com/44/131322/ffffff?text=Bein+US", category: "extra", url: "http://23.237.104.106:8080/USA_BEIN/index.m3u8" },
+            { name: "TUDN", logo: "https://via.placeholder.com/44/131322/ffffff?text=TUDN", category: "extra", url: "http://24.152.53.3:8090/play/a012/index.m3u8" },
+            { name: "TUDN USA", logo: "https://via.placeholder.com/44/131322/ffffff?text=TUDN+US", category: "extra", url: "http://m3u.tvcluboficial.com/m/m/957.m3u8" },
+            { name: "TUDN Base", logo: "https://via.placeholder.com/44/131322/ffffff?text=TUDN+B", category: "extra", url: "http://45.5.119.43:4000/play/a05q/index.m3u8" },
+            { name: "TUDN 30", logo: "https://via.placeholder.com/44/131322/ffffff?text=TUDN+30", category: "extra", url: "http://45.171.64.30:2000/play/a08j/index.m3u8" },
+            { name: "NBA (ESPN2 Feed)", logo: "https://via.placeholder.com/44/131322/ffffff?text=NBA", category: "extra", url: "http://41.223.30.230/ESPN2/index.m3u8" },
+            { name: "CT SPORT HD", logo: "https://via.placeholder.com/44/131322/ffffff?text=CT+Sport", category: "extra", url: "http://88.212.15.19/live/test_ctsport_25p/playlist.m3u8" },
+            { name: "RCN (Colombia)", logo: "https://via.placeholder.com/44/131322/ffffff?text=RCN", category: "extra", url: "http://181.78.211.244:8005/play/a0ak/index.m3u8" },
+            { name: "WIN+ (Peru)", logo: "https://via.placeholder.com/44/131322/ffffff?text=WIN+PE", category: "extra", url: "http://147.135.114.221:8001/play/a00u/index.m3u8" },
+            { name: "Caracol", logo: "https://via.placeholder.com/44/131322/ffffff?text=Caracol", category: "extra", url: "http://181.78.8.199:8000/play/a0b0/index.m3u8" },
+            { name: "Commune", logo: "https://via.placeholder.com/44/131322/ffffff?text=Commune", category: "extra", url: "https://082cdda06abe450a84acd825e814a6b8.mediatailor.us-east-1.amazonaws.com/v1/master/44f73ba4d03e9607dcd9bebdcb8494d86964f1d8/SportsTribal-eu_Commune-1/playlist.m3u8" },
+            { name: "Cricket Gold", logo: "https://via.placeholder.com/44/131322/ffffff?text=Cric+G", category: "extra", url: "https://d1nj4u39ja4cn0.cloudfront.net/v1/master/9d062541f2ff39b5c0f48b743c6411d25f62fc25/FLS-MuxIP-CricketGold/418.m3u8" },
+            { name: "Drone TV", logo: "https://via.placeholder.com/44/131322/ffffff?text=Drone", category: "extra", url: "https://a480c1a918694b47b63f7ba07a0f1dc2.mediatailor.us-east-1.amazonaws.com/v1/master/44f73ba4d03e9607dcd9bebdcb8494d86964f1d8/SportsTribal-eu_DroneTV/playlist.m3u8" },
+            { name: "Field & Stream", logo: "https://via.placeholder.com/44/131322/ffffff?text=Field", category: "extra", url: "https://3100d8a6ad764beb9da3c6ebf285ba1b.mediatailor.us-west-2.amazonaws.com/v1/master/ba62fe743df0fe93366eba3a257d792884136c7f/LINEAR-600-OUTDOORAMERICA-FREELIVESPORTS/mt/freelivesports/600/hls/master/playlist.m3u8" },
+            { name: "FIGHT NETWORK", logo: "https://via.placeholder.com/44/131322/ffffff?text=Fight+N", category: "extra", url: "https://amg00966-amg00966c10-amgplt0201.playout.now3.amagi.tv/playlist/amg00966-amg00966c10-amgplt0201/playlist.m3u8" },
+            { name: "FUEL TV", logo: "https://via.placeholder.com/44/131322/ffffff?text=Fuel", category: "extra", url: "https://cdn-uw2-prod.tsv2.amagi.tv/linear/amg01074-fueltv-fueltvemeaen-sportstribal/playlist.m3u8" },
+            { name: "GCTV", logo: "https://via.placeholder.com/44/131322/ffffff?text=GCTV", category: "extra", url: "https://cdn-uw2-prod.tsv2.amagi.tv/linear/amg00585-sportstribaltv-gctv-sportstribal/playlist.m3u8" },
+            { name: "GoPro", logo: "https://via.placeholder.com/44/131322/ffffff?text=GoPro", category: "extra", url: "https://3a1b4d927c02473b806350cc162d271f.mediatailor.us-west-2.amazonaws.com/v1/master/ba62fe743df0fe93366eba3a257d792884136c7f/LINEAR-891-GOPRO-FREELIVESPORTS/mt/freelivesports/891/hls/master/playlist.m3u8" },
+            { name: "H20 TV", logo: "https://via.placeholder.com/44/131322/ffffff?text=H20", category: "extra", url: "https://1261a78709344810a5b834d397509879.mediatailor.us-west-2.amazonaws.com/v1/master/ba62fe743df0fe93366eba3a257d792884136c7f/LINEAR-738-H2OTV-SPORTSTRIBALTV/mt/sportstribaltv/738/hls/master/playlist.m3u8" },
+            { name: "Hard Knocks", logo: "https://via.placeholder.com/44/131322/ffffff?text=Knocks", category: "extra", url: "https://d3uyzhwvmemdyf.cloudfront.net/v1/master/9d062541f2ff39b5c0f48b743c6411d25f62fc25/HardKnocks-SportsTribalV2/121.m3u8" },
+            { name: "Harlem Globetrotters", logo: "https://via.placeholder.com/44/131322/ffffff?text=Harlem", category: "extra", url: "https://32d0f0785a2a46d28117199f63ad73ea.mediatailor.us-east-1.amazonaws.com/v1/master/44f73ba4d03e9607dcd9bebdcb8494d86964f1d8/SportsTribal-eu_TheHarlemGlobeTrotters/playlist.m3u8" },
+            { name: "Horse & Country", logo: "https://via.placeholder.com/44/131322/ffffff?text=Horse", category: "extra", url: "https://hncfree-sportstribal.amagi.tv/hls/amagi_hls_data_sportstri-hncfree-sportstribal/CDN/playlist.m3u8" },
+            { name: "Tango Sports 4", logo: "https://via.placeholder.com/44/131322/ffffff?text=Tango", category: "extra", url: "http://190.7.19.197:232/play/a037/index.m3u8" },
+            { name: "5 SPORT 🇮🇱", logo: "https://via.placeholder.com/44/131322/ffffff?text=5+Sport", category: "extra", url: "http://wo0dyefk.dienalt.org/iptv/DV3AC2Q6YSR9XE/2558/index.m3u8" },
+            { name: "Setenta Sport 1 🇷🇺", logo: "https://via.placeholder.com/44/131322/ffffff?text=Set+1", category: "extra", url: "http://cdntv.online/low/9mlxywika2/1021.m3u8" },
+            { name: "Setenta Sport 2 🇷🇺", logo: "https://via.placeholder.com/44/131322/ffffff?text=Set+2", category: "extra", url: "http://cdntv.online/low/9mlxywika2/1022.m3u8" },
+            { name: "Setanta Sport 🇺🇦", logo: "https://via.placeholder.com/44/131322/ffffff?text=Set+UA", category: "extra", url: "http://217.174.225.146/hls/ch004_720/index.m3u8" },
+            { name: "Super Sport 1 🇦🇱", logo: "https://via.placeholder.com/44/131322/ffffff?text=SS+1", category: "extra", url: "http://93.93.113.95:25461/TV-Berati/XtreamCodes/494" },
+            { name: "Super Sport 2 🇦🇱", logo: "https://via.placeholder.com/44/131322/ffffff?text=SS+2", category: "extra", url: "http://93.93.113.95:25461/TV-Berati/XtreamCodes/495" },
+            { name: "NOVA SPORT 1 HD 🇨🇿", logo: "https://via.placeholder.com/44/131322/ffffff?text=Nova", category: "extra", url: "http://wo0dyefk.dienalt.org/iptv/DV3AC2Q6YSR9XE/2555/index.m3u8" },
+            { name: "SPORT 1 HD 🇨🇿", logo: "https://via.placeholder.com/44/131322/ffffff?text=Sport+1", category: "extra", url: "http://88.212.15.19/live/test_sport1_25p/playlist.m3u8" },
+            { name: "SPORT 2 HD 🇨🇿", logo: "https://via.placeholder.com/44/131322/ffffff?text=Sport+2", category: "extra", url: "http://88.212.15.19/live/test_sport_2/playlist.m3u8" },
+            { name: "ARENA SPORT 1 🇨🇿", logo: "https://via.placeholder.com/44/131322/ffffff?text=Arena+1", category: "extra", url: "http://88.212.15.19/live/test_arenasport/playlist.m3u8" },
+            { name: "ARENA SPORT 2 🇨🇿", logo: "https://via.placeholder.com/44/131322/ffffff?text=Arena+2", category: "extra", url: "http://88.212.15.19/live/test_arenasport_dva/playlist.m3u8" },
+            { name: "MAX SPORT 1 🇧🇬", logo: "https://via.placeholder.com/44/131322/ffffff?text=Max+1", category: "extra", url: "http://77.46.130.252:99/maxsport1" },
+            { name: "MAX SPORT 2 🇧🇬", logo: "https://via.placeholder.com/44/131322/ffffff?text=Max+2", category: "extra", url: "http://77.46.130.252:99/maxsport2" },
+            { name: "MAX SPORT 3 🇧🇬", logo: "https://via.placeholder.com/44/131322/ffffff?text=Max+3", category: "extra", url: "http://77.46.130.252:99/maxsport3" },
+            { name: "MAX SPORT 4 🇧🇬", logo: "https://via.placeholder.com/44/131322/ffffff?text=Max+4", category: "extra", url: "http://77.46.130.252:99/maxsport4" },
+            { name: "M4 Sport 🇭🇺", logo: "https://via.placeholder.com/44/131322/ffffff?text=M4", category: "extra", url: "http://46.149.191.217:9010/play/a017" },
+            { name: "ZIGGO SPORT 2 HD 🇳🇱", logo: "https://via.placeholder.com/44/131322/ffffff?text=Ziggo+2", category: "extra", url: "http://wo0dyefk.dienalt.org/iptv/DV3AC2Q6YSR9XE/2561/index.m3u8" },
+            { name: "ZIGGO SPORT 3 HD 🇳🇱", logo: "https://via.placeholder.com/44/131322/ffffff?text=Ziggo+3", category: "extra", url: "http://wo0dyefk.dienalt.org/iptv/DV3AC2Q6YSR9XE/2559/index.m3u8" },
+            { name: "ZIGGO SPORT LIVE 🇳🇱", logo: "https://via.placeholder.com/44/131322/ffffff?text=Ziggo+L", category: "extra", url: "http://wo0dyefk.dienalt.org/iptv/DV3AC2Q6YSR9XE/2560/index.m3u8" },
+            { name: "ORF+ 🇦🇹", logo: "https://via.placeholder.com/44/131322/ffffff?text=ORF+", category: "extra", url: "http://212.186.45.34:9981/stream/channelid/906723447" },
+            { name: "MTR Sports-1 🇬🇧", logo: "https://via.placeholder.com/44/131322/ffffff?text=MTR", category: "extra", url: "https://cdn-uw2-prod.tsv2.amagi.tv/linear/amg02873-kravemedia-mtrspt1-distrotv/playlist.m3u8" },
+            { name: "X SPORT 🇷🇺", logo: "https://via.placeholder.com/44/131322/ffffff?text=X+Sport", category: "extra", url: "http://iptv.prosto.tv:7000/ch109/video.m3u8" },
+            { name: "Turkmenistan Sport 🇹🇲", logo: "https://via.placeholder.com/44/131322/ffffff?text=Turk+S", category: "extra", url: "http://217.174.225.146/legacyhls/ch004_720/index.m3u8" },
+            { name: "SPORTV 2", logo: "https://via.placeholder.com/44/131322/ffffff?text=SporTV2", category: "extra", url: "https://otte.live.fly.ww.aiv-cdn.net/gru-nitro/live/clients/dash-sd/enc/4yiko4it8k/out/v1/b77dd424c745443aba2f3f88d418f797/cenc-sd.mpd" },
+            { name: "SPORTV 3", logo: "https://via.placeholder.com/44/131322/ffffff?text=SporTV3", category: "extra", url: "https://otte.live.fly.ww.aiv-cdn.net/gru-nitro/live/clients/dash/enc/6otiglnptp/out/v1/add7499679b0422cb6791f7701f95ecc/cenc.mpd" },
+            { name: "TDM Desporto 🇲🇴", logo: "https://via.placeholder.com/44/131322/ffffff?text=TDM", category: "extra", url: "http://cdn6.163189.xyz/163189/amty" },
+            { name: "OTT CLUB 🇷🇺", logo: "https://via.placeholder.com/44/131322/ffffff?text=OTT+C", category: "extra", url: "http://czrb8vng.ottclub.xyz/iptv/AHMQNVLWUTM5PW/6554/index.m3u8" },
+            { name: "Digi Sport 2 🇷🇴", logo: "https://via.placeholder.com/44/131322/ffffff?text=Digi+2", category: "extra", url: "http://91.201.172.14:35006/" },
+            { name: "Суспільне Kiev Спорт HD 🇺🇦", logo: "https://via.placeholder.com/44/131322/ffffff?text=Susp", category: "extra", url: "https://tva.in.ua/live/susp-sport.m3u8" },
+            { name: "RTSH Sport 🇦🇱", logo: "https://via.placeholder.com/44/131322/ffffff?text=RTSH", category: "extra", url: "http://217.73.139.200:5443/play/a01d" },
+            { name: "Sportdigital 🇩🇪", logo: "https://via.placeholder.com/44/131322/ffffff?text=SportD", category: "extra", url: "https://jmp2.uk/stvp-ATAJ0500433A" },
+            { name: "Turkmenistan Sport 🇹🇲 (Alt)", logo: "https://via.placeholder.com/44/131322/ffffff?text=Turk+A", category: "extra", url: "https://alpha.tv.online.tm/legacyhls/ch004_720/index.m3u8" },
+            { name: "SPORT ITALIA 🇮🇹", logo: "https://via.placeholder.com/44/131322/ffffff?text=Italia", category: "extra", url: "https://amg01370-italiansportcom-sportitalia-rakuten-3hmdb.amagi.tv/amRdirect/ads_pod_type=playerpage_midroll&ads_env=prod&ads_ppid=&ads_rtvid=271861&ads_streaming_id=4f185419-74f6-4564-8ea9-4cdc60746e2f&ads_amagi_channel=781&ads_device_type=web&ads_device_model=&ads_device_year=&ads_player_width=&ads_rtv_content_language=ita&ads_market=it&ads_rtv_content_id=3741&ads_device_make=&ads_user_type=visitor&ads_content_classification=6&ads_gdpr_consent=&ads_device_lmt=1&ads_player_height=&uid=1gnmqg5gu-qsvc-bfo-gaq3-3dgjgexshpe/hls/amagi_hls_data_rakutenAA-sportitalia-rakuten/CDN/1920x1080_4540800/chunklist.m3u8" },
+            { name: "TR Sport (480p) 🇮🇹", logo: "https://via.placeholder.com/44/131322/ffffff?text=TR+Sport", category: "extra", url: "https://livetr.teleromagna.it/mia/live/playlist.m3u8" },
+            { name: "L`Equipe 🇫🇷", logo: "https://via.placeholder.com/44/131322/ffffff?text=Equipe", category: "extra", url: "https://jmp2.uk/stvp-FR200016Y5" },
+            { name: "INFOSPORT 🇫🇷", logo: "https://via.placeholder.com/44/131322/ffffff?text=InfoS", category: "extra", url: "http://212.102.60.80/Infosport/index.m3u8" },
+            { name: "ON Sports+ 🇭🇳", logo: "https://via.placeholder.com/44/131322/ffffff?text=ON+S+", category: "extra", url: "https://freem3u.xyz/api/live/play.m3u8" },
+            { name: "MMN Sport 🇸🇦", logo: "https://via.placeholder.com/44/131322/ffffff?text=MMN", category: "extra", url: "http://mmn.mypsx.net:1935/live/mmnhdsport/chunklist.m3u8" },
+            { name: "MASR 🇶🇦", logo: "https://via.placeholder.com/44/131322/ffffff?text=MASR", category: "extra", url: "https://shls-masr-ak.akamaized.net/out/v1/d5036cabf11e45bf9d0db410ca135c18/index.m3u8" },
+            { name: "TELETRAK 🇨🇱", logo: "https://via.placeholder.com/44/131322/ffffff?text=TeleT", category: "extra", url: "http://unlimited6-cl.dps.live/sportinghd/sportinghd.smil/playlist.m3u8" },
+            { name: "Sport5 🇮🇱 (Feed 1)", logo: "https://via.placeholder.com/44/131322/ffffff?text=Sport5-1", category: "extra", url: "https://rgelive.akamaized.net/hls/live/2043151/radiolive/playlist.m3u8" },
+            { name: "Sport5 🇮🇱 (Feed 2)", logo: "https://via.placeholder.com/44/131322/ffffff?text=Sport5-2", category: "extra", url: "https://rgelive.akamaized.net/hls/live/2043095/live3/playlist.m3u8" },
+            { name: "Garage TV", logo: "https://via.placeholder.com/44/131322/ffffff?text=Garage", category: "extra", url: "https://stream1.sersat.com/hls/garagetv.m3u8" },
+            { name: "Xtrema TV Cna Deportes 2", logo: "https://via.placeholder.com/44/131322/ffffff?text=Xtrema", category: "extra", url: "https://stmv6.voxtvhd.com.br/cnardeportes/cnardeportes/playlist.m3u8" }
         ];
 
-        const countrySources = {
-            bd: "https://iptv-org.github.io/iptv/countries/bd.m3u",
-            in: "https://iptv-org.github.io/iptv/countries/in.m3u",
-            us: "https://iptv-org.github.io/iptv/countries/us.m3u"
-        };
-
         window.addEventListener('DOMContentLoaded', () => {
-            loadChannels(countrySources.bd);
-            setupCustomControls();
+            renderGrid();
+            setupControls();
             
-            // ইন-অ্যাপ রেসপন্সিভ PiP ইঞ্জিন টগল লজিক
             pipBtn.addEventListener('click', () => {
                 const playerDiv = document.getElementById('main-player');
                 if (playerDiv.style.position === 'fixed') {
@@ -203,125 +451,40 @@
                     playerDiv.style.right = '15px';
                 }
             });
-
-            settingsBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                qualityMenu.style.display = qualityMenu.style.display === 'block' ? 'none' : 'block';
-            });
-            document.addEventListener('click', () => { qualityMenu.style.display = 'none'; });
         });
 
-        // কাস্টম প্রিমিয়াম কন্ট্রোল মেকানিজম (প্লে, পজ, প্রোগ্রেস বার ও টাইম ট্র্যাকিং)
-        function setupCustomControls() {
+        function setupControls() {
             playPauseBtn.addEventListener('click', () => {
-                if (video.paused) {
-                    video.play();
-                } else {
-                    video.focus();
-                    video.pause();
-                }
+                if (video.paused) video.play();
+                else video.pause();
             });
-
             video.addEventListener('play', () => { playPauseIcon.className = 'fa-solid fa-pause'; });
             video.addEventListener('pause', () => { playPauseIcon.className = 'fa-solid fa-play'; });
-
-            // টাইমলাইন ও সময় আপডেট ট্র্যাকিং
+            
             video.addEventListener('timeupdate', () => {
                 const current = video.currentTime;
-                const total = video.duration || 0;
-                
-                // প্রোগ্রেস বার লাল অংশ বাড়ানো
-                if (total > 0) {
-                    const percentage = (current / total) * 100;
-                    progressBar.style.width = percentage + '%';
-                } else {
-                    progressBar.style.width = '100%'; // লাইভ স্ট্রিমের জন্য ফুল টাইমলাইন গ্লো
-                }
-                
-                timeDisplay.textContent = formatTime(current) + ' / ' + formatTime(total);
+                const mins = Math.floor(current / 60);
+                const secs = Math.floor(current % 60);
+                timeDisplay.textContent = `${mins < 10 ? '0' : ''}${mins}:${secs < 10 ? '0' : ''}${secs} / LIVE`;
             });
-
-            // টাইমলাইনে হাত দিয়ে টানলে যেন ভিডিওর সময় বাড়ে/কমে
-            progressContainer.addEventListener('click', (e) => {
-                const total = video.duration || 0;
-                if (total > 0) {
-                    const rect = progressContainer.getBoundingClientRect();
-                    const clickX = e.clientX - rect.left;
-                    const width = rect.width;
-                    video.currentTime = (clickX / width) * total;
-                }
-            });
-        }
-
-        function formatTime(seconds) {
-            if (isNaN(seconds) || seconds === Infinity) return "00:00";
-            const hrs = Math.floor(seconds / 3600);
-            const mins = Math.floor((seconds % 3600) / 60);
-            const secs = Math.floor(seconds % 60);
-            if (hrs > 0) {
-                return `${hrs}:${mins < 10 ? '0' : ''}${mins}:${secs < 10 ? '0' : ''}${secs}`;
-            }
-            return `${mins < 10 ? '0' : ''}${mins}:${secs < 10 ? '0' : ''}${secs}`;
-        }
-
-        async function loadChannels(url) {
-            try {
-                channelListGrid.innerHTML = `<li style="grid-column: 1/-1; text-align: center; padding: 40px; color: #64748b;"><i class="fa-solid fa-circle-notch fa-spin fa-2xl" style="color: #e50914; margin-bottom: 15px;"></i><p>চ্যানেল ম্যাপিং হচ্ছে...</p></li>`;
-                const response = await fetch(url);
-                const text = await response.text();
-                const lines = text.split('\n');
-                const parsedChannels = [];
-                let current = {};
-
-                for (let i = 0; i < lines.length; i++) {
-                    let line = lines[i].trim();
-                    if (line.startsWith('#EXTINF:')) {
-                        const nameMatch = line.match(/,(.+)$/);
-                        current.name = nameMatch ? nameMatch[1] : "Live TV";
-                        const logoMatch = line.match(/tvg-logo="([^"]+)"/);
-                        current.logo = logoMatch ? logoMatch[1] : "";
-                        const groupMatch = line.match(/group-title="([^"]+)"/);
-                        current.category = groupMatch ? groupMatch[1].toLowerCase() : "general";
-                    } else if (line.startsWith('http')) {
-                        current.url = line;
-                        parsedChannels.push(current);
-                        current = {};
-                    }
-                }
-                // শুধুমাত্র বাংলাদেশ ক্যাটাগরিতে আমাদের নিজস্ব ভেরিফাইড VIP লিংকগুলো একদম টপে শো করবে
-                fetchedChannels = (currentCountry === 'bd') ? [...myVipChannels, ...parsedChannels] : parsedChannels;
-                renderGrid();
-            } catch (error) {
-                fetchedChannels = [...myVipChannels];
-                renderGrid();
-            }
         }
 
         function renderGrid(searchFilter = '') {
             channelListGrid.innerHTML = '';
-            const filtered = fetchedChannels.filter(ch => {
-                const matchesCategory = currentCategory === 'all' || ch.category === currentCategory || (currentCategory === 'sports' && ch.category.includes('sports')) || (currentCategory === 'news' && ch.category.includes('news'));
+            const filtered = vipChannels.filter(ch => {
+                const matchesCategory = currentCategory === 'all' || ch.category === currentCategory;
                 const matchesSearch = ch.name.toLowerCase().includes(searchFilter.toLowerCase());
                 return matchesCategory && matchesSearch;
             });
 
-            if (filtered.length === 0) {
-                channelListGrid.innerHTML = `<li style="grid-column: 1/-1; text-align: center; padding: 40px; color: #64748b;">কোনো সচল চ্যানেল পাওয়া যায়নি।</li>`;
-                return;
-            }
-
             filtered.forEach(ch => {
                 const card = document.createElement('li');
                 card.className = 'channel-card';
-                if(ch.category === 'vip') card.style.borderColor = 'rgba(0,255,170,0.4)';
-                
-                const logoImg = ch.logo ? ch.logo : "https://via.placeholder.com/44/131322/ffffff?text=📺";
-                card.innerHTML = `<img src="${logoImg}" onerror="this.src='https://via.placeholder.com/44/131322/e50914?text=TV'"><span class="channel-title">${ch.name}</span>`;
+                card.innerHTML = `<img src="${ch.logo}"><span class="channel-title">${ch.name}</span>`;
                 
                 card.addEventListener('click', () => {
                     document.querySelectorAll('.channel-card').forEach(el => el.classList.remove('active'));
                     card.classList.add('active');
-                    
                     poster.style.display = 'none';
                     playStream(ch.url);
                 });
@@ -332,29 +495,17 @@
         function playStream(streamUrl) {
             if (hls) { hls.destroy(); hls = null; }
             video.src = "";
-            qualityMenu.innerHTML = `<li class="active" onclick="changeQuality(-1, this)">Auto</li>`;
 
             if (Hls.isSupported()) {
-                hls = new Hls({ maxBufferLength: 30, lowLatencyMode: true });
+                hls = new Hls({ maxBufferLength: 10, lowLatencyMode: true });
                 hls.loadSource(streamUrl);
                 hls.attachMedia(video);
+                hls.on(Hls.Events.MANIFEST_PARSED, () => { video.play().catch(() => {}); });
                 
-                hls.on(Hls.Events.MANIFEST_PARSED, function () {
-                    hls.levels.forEach((level, index) => {
-                        const name = level.height ? level.height + 'p' : 'Quality ' + index;
-                        const li = document.createElement('li');
-                        li.textContent = name;
-                        li.onclick = function() { changeQuality(index, li); };
-                        qualityMenu.appendChild(li);
-                    });
-                    video.play().catch(() => {});
-                });
-
-                // ওটো-রিকভারি (লিংক এরর আসলে পেজ না আটকে স্ট্রিম অটো রিলোড করবে)
-                hls.on(Hls.Events.ERROR, function (event, data) {
+                hls.on(Hls.Events.ERROR, (event, data) => {
                     if (data.fatal) {
-                        if (data.type === Hls.ErrorTypes.NETWORK_ERROR) { hls.startLoad(); } 
-                        else if (data.type === Hls.ErrorTypes.MEDIA_ERROR) { hls.recoverMediaError(); }
+                        if (data.type === Hls.ErrorTypes.NETWORK_ERROR) hls.startLoad();
+                        else if (data.type === Hls.ErrorTypes.MEDIA_ERROR) hls.recoverMediaError();
                     }
                 });
             } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
@@ -363,25 +514,7 @@
             }
         }
 
-        function changeQuality(levelIndex, element) {
-            if (hls) {
-                hls.currentLevel = levelIndex;
-                document.querySelectorAll('#quality-menu li').forEach(li => li.classList.remove('active'));
-                element.classList.add('active');
-            }
-        }
-
         function searchChannels() { renderGrid(searchBar.value); }
-
-        function changeCountry(code, event) {
-            document.querySelectorAll('#country-tabs .tab-btn').forEach(b => b.classList.remove('active'));
-            event.target.classList.add('active');
-            currentCountry = code;
-            currentCategory = 'all';
-            document.querySelectorAll('#category-tabs .cat-btn').forEach(b => b.classList.remove('active'));
-            document.querySelectorAll('#category-tabs .cat-btn')[0].classList.add('active');
-            loadChannels(countrySources[code]);
-        }
 
         function changeCategory(cat, event) {
             document.querySelectorAll('#category-tabs .cat-btn').forEach(b => b.classList.remove('active'));
